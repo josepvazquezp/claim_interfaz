@@ -14,36 +14,80 @@ void drawStart()
     DrawText("Press enter to START", 450, 600, 60, textStart);
 }
 
-void drawTable()
+void drawTable(Stack *P)
 {
-    Image backG= LoadImage("C:\\Users\\Jose\\Documents\\ITESO\\Semestre3\\Programacion con memoria dinamica\\claim_Clion\\cards\\Tablero.png");
+    Image backG = LoadImage("C:\\Users\\Jose\\Documents\\ITESO\\Semestre3\\Programacion con memoria dinamica\\claim_Clion\\cards\\Tablero.png");
     Texture2D textureBack = LoadTextureFromImage(backG);
     UnloadImage(backG);
     DrawTexture(textureBack, 0, 0, WHITE);
 
-    int i;
-    int ac = 5;
-    for(i = 0 ; i < 10 ; i++)
+    Node *focusNode = P->head;
+    int i = 0;
+    int ac = 13;
+    while(focusNode != NULL)
     {
-        DrawRectangle(ac, 10, 131, 198, WHITE);
-        DrawRectangle(ac, 690, 131, 198, WHITE);
-        ac += 160;
-    }
-    for(i = 0, ac = 5 ; i < 3 ; i++)
-    {
-        DrawRectangle(ac, 220, 131, 198, WHITE);
-        DrawRectangle(ac, 480, 131, 198, WHITE);
-        ac += 160;
-    }
+        if(i < 10)
+        {
+            DrawRectangle(ac, 8, 135, 202, WHITE);
+            DrawRectangle(ac, 688, 135, 202, WHITE);
+        }
+        else
+        {
+            if(i == 10)
+                ac = 13;
 
-    Image deckCard = LoadImage("C:\\Users\\Jose\\Documents\\ITESO\\Semestre3\\Programacion con memoria dinamica\\claim_Clion\\cards\\G0.png");
-    ImageRotateCW(&deckCard);
-    Texture2D textureDeck = LoadTextureFromImage(deckCard);
-    UnloadImage(deckCard);
+            DrawRectangle(ac, 218, 135, 202, WHITE);
+            DrawRectangle(ac, 478, 135, 202, WHITE);
+        }
+
+        ac += 160;
+
+        focusNode = focusNode->next;
+
+        i++;
+    }
 
     DrawRectangle(1390, 382, 202, 135, WHITE);
+
+}
+
+void displayPDeck(Stack *D, Stack *P)
+{
+    drawTable(P);
+
+    Node *deckNode = peek(D);
+    ImageRotateCW(&deckNode->card);
+    Texture2D textureDeck = LoadTextureFromImage(deckNode->card);
+    UnloadImage(deckNode->card);
     DrawTexture(textureDeck, 1392, 384, WHITE);
 
+    Node *focusNodeP = P->head;
+
+    int i = 0;
+    int ac = 15;
+    Texture2D tTemp;
+
+    while(focusNodeP != NULL)
+    {
+        tTemp = LoadTextureFromImage(focusNodeP->card);
+        UnloadImage(focusNodeP->card);
+
+        if(i < 10)
+            DrawTexture(tTemp, ac, 690, WHITE);
+        else
+        {
+            if(i == 10)
+                ac = 15;
+
+            DrawTexture(tTemp, ac, 480, WHITE);
+        }
+
+        ac += 160;
+
+        focusNodeP = focusNodeP->next;
+
+        i++;
+    }
 }
 
 Stack *newDeck()
@@ -109,7 +153,7 @@ Stack *newDeck()
 
     Node *focusNode;
 
-    char root[98] = "C:\\Users\\Jose\\Documents\\ITESO\\Semestre3\\Programacion con memoria dinamica\\claim_Clion\\cards\\G0.png";
+    char root[16] = "..\\cards\\G0.png\0";
     Image iTemp;
     Texture2D tTemp;
 
@@ -124,10 +168,12 @@ Stack *newDeck()
             D->head->type = temp[i][1];
             D->head->next = NULL;
 
-            root[92] = temp[i][1];
-            root[93] = temp[i][0];
+            root[9] = temp[i][1];
+            root[10] = temp[i][0];
 
             D->head->card = LoadImage(root);
+
+            printf("%s\n", root);
 
             focusNode = D->head;
         }
@@ -142,15 +188,14 @@ Stack *newDeck()
             focusNode->type = temp[i][1];
             focusNode->next = NULL;
 
-            root[92] = temp[i][1];
-            root[93] = temp[i][0];
+            root[9] = temp[i][1];
+            root[10] = temp[i][0];
 
             focusNode->card = LoadImage(root);
         }
 
         D->cN++;
 
-        //printf("#%d Type: %c with level: %d\n", D->cN, focusNode->type, focusNode->level);
     }
 
     return D;
@@ -200,6 +245,7 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
         }
 
         nT = pop(temp);
+        P1->cN--;
 
         while(peek(temp) != NULL)
         {
@@ -220,6 +266,7 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
         }
 
         nT2 = pop(temp);
+        P2->cN--;
 
         while(peek(temp) != NULL)
         {
@@ -240,6 +287,7 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
         }
 
         nT2 = pop(temp);
+        P2->cN--;
 
         while(peek(temp) != NULL)
         {
@@ -259,6 +307,7 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
         }
 
         nT = pop(temp);
+        P1->cN--;
 
         while(peek(temp) != NULL)
         {
