@@ -64,7 +64,7 @@ void displayDeckCard(Node *tC)
 void displayPDeck(Stack *D, Stack *P, Node *tC)
 {
     drawTable(P);
-    //displayDeckCard(tC);
+    displayDeckCard(tC);
 
     Node *focusNodeP = P->head;
 
