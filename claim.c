@@ -16,7 +16,7 @@ void drawStart()
 
 void drawTable(Stack *P)
 {
-    Image backG = LoadImage("C:\\Users\\Jose\\Documents\\ITESO\\Semestre3\\Programacion con memoria dinamica\\claim_Clion\\cards\\Tablero.png");
+    Image backG = LoadImage("..\\cards\\Tablero.png");
     Texture2D textureBack = LoadTextureFromImage(backG);
     UnloadImage(backG);
     DrawTexture(textureBack, 0, 0, WHITE);
@@ -72,19 +72,27 @@ void displayPDeck(Stack *D, Stack *P, Node *tC)
     int ac = 15;
     Texture2D tTemp;
 
+    Image bakcC = LoadImage("..\\cards\\fback.png");
+    Texture2D  tBack = LoadTextureFromImage(bakcC);
+    UnloadImage(bakcC);
+
     while(focusNodeP != NULL)
     {
         tTemp = LoadTextureFromImage(focusNodeP->card);
         UnloadImage(focusNodeP->card);
 
         if(i < 10)
+        {
             DrawTexture(tTemp, ac, 690, WHITE);
+            DrawTexture(tBack, ac, 10, WHITE);
+        }
         else
         {
             if(i == 10)
                 ac = 15;
 
             DrawTexture(tTemp, ac, 480, WHITE);
+            DrawTexture(tBack, ac, 220, WHITE);
         }
 
         ac += 160;
@@ -160,7 +168,7 @@ Stack *newDeck()
 
     Node *focusNode;
 
-    char root[16] = "..\\cards\\G0.png\0";
+    char root[] = "..\\cards\\G0.png";
     Image iTemp;
     Texture2D tTemp;
 
