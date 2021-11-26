@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 #include "claim.h"
 #include "stack.h"
 #include "raylib.h"
@@ -54,10 +55,11 @@ void drawTable(Stack *P)
 
 void displayDeckCard(Node *tC)
 {
-    Node *deckNode = tC;
-    ImageRotateCW(&deckNode->card);
-    Texture2D textureDeck = LoadTextureFromImage(deckNode->card);
-    UnloadImage(deckNode->card);
+    printf("%s\n", tC->card);
+    Image deck = LoadImage(tC->card);
+    ImageRotateCW(&deck);
+    Texture2D textureDeck = LoadTextureFromImage(deck);
+    UnloadImage(deck);
     DrawTexture(textureDeck, 1392, 384, WHITE);
 }
 
@@ -73,13 +75,15 @@ void displayPDeck(Stack *D, Stack *P, Node *tC)
     Texture2D tTemp;
 
     Image backC = LoadImage("..\\cards\\fback.png");
+    Image tI;
     Texture2D  tBack = LoadTextureFromImage(backC);
     UnloadImage(backC);
 
     while(focusNodeP != NULL)
     {
-        tTemp = LoadTextureFromImage(focusNodeP->card);
-        UnloadImage(focusNodeP->card);
+        tI = LoadImage(focusNodeP->card);
+        tTemp = LoadTextureFromImage(tI);
+        UnloadImage(tI);
 
         if(i < 10)
         {
@@ -186,9 +190,7 @@ Stack *newDeck()
             root[9] = temp[i][1];
             root[10] = temp[i][0];
 
-            D->head->card = LoadImage(root);
-
-            printf("%s\n", root);
+            strcpy(D->head->card, root);
 
             focusNode = D->head;
         }
@@ -206,7 +208,7 @@ Stack *newDeck()
             root[9] = temp[i][1];
             root[10] = temp[i][0];
 
-            focusNode->card = LoadImage(root);
+            strcpy(focusNode->card, root);;
         }
 
         D->cN++;
