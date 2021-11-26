@@ -45,21 +45,26 @@ void drawTable(Stack *P)
         focusNode = focusNode->next;
 
         i++;
+
     }
 
     DrawRectangle(1390, 382, 202, 135, WHITE);
 
 }
 
-void displayPDeck(Stack *D, Stack *P)
+void displayDeckCard(Node *tC)
 {
-    drawTable(P);
-
-    Node *deckNode = peek(D);
+    Node *deckNode = tC;
     ImageRotateCW(&deckNode->card);
     Texture2D textureDeck = LoadTextureFromImage(deckNode->card);
     UnloadImage(deckNode->card);
     DrawTexture(textureDeck, 1392, 384, WHITE);
+}
+
+void displayPDeck(Stack *D, Stack *P, Node *tC)
+{
+    drawTable(P);
+    //displayDeckCard(tC);
 
     Node *focusNodeP = P->head;
 
@@ -87,8 +92,10 @@ void displayPDeck(Stack *D, Stack *P)
         focusNodeP = focusNodeP->next;
 
         i++;
+
+        }
     }
-}
+
 
 Stack *newDeck()
 {
@@ -232,6 +239,8 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
     int i;
 
     //printf("[Deck] Type: %c level: %d\n\n", tC->type, tC->level);
+    displayPDeck(D, P1, tC);
+    return;
 
     if(D->t == 0)
     {

@@ -49,8 +49,7 @@ int main(void)
 
         if(start == 0)
         {
-            displayPDeck(D, P1);
-
+            displayPDeck(D, P1, peek(D));
             /*
             while (peek(D) != NULL)
             {

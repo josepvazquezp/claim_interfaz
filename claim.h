@@ -32,6 +32,7 @@ void claimWinner(Stack *V1, Stack *V2);
 //void displayD(Stack * D);
 void drawStart();
 void drawTable(Stack *P);
-void displayPDeck(Stack *D, Stack *P);
+void displayDeckCard(Node *tC);
+void displayPDeck(Stack *D, Stack *P, Node *tC);
 
 #endif
