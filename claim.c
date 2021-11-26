@@ -51,6 +51,23 @@ void drawTable(Stack *P)
 
     DrawRectangle(1390, 382, 202, 135, WHITE);
 
+    DrawRectangle(657, 350, 137, 204, WHITE);
+    DrawRectangle(976, 350, 137, 204, WHITE);
+
+    //CARTA DE COMBATE
+    DrawRectangle(657, 350, 135, 202, BLACK);
+    DrawRectangle(976, 350, 135, 202, BLACK);
+    DrawText("VS", 843, 420, 60, WHITE);
+    DrawText("VS", 840, 420, 60, RED);
+
+    DrawText("P1", 700, 558, 60, WHITE);
+    DrawText("P2", 1012, 558, 60, WHITE);
+    DrawText("P1", 698, 558, 60, RED);
+    DrawText("P2", 1010, 558, 60, RED);
+
+
+
+
 }
 
 void displayDeckCard(Node *tC)
@@ -105,8 +122,8 @@ void displayPDeck(Stack *D, Stack *P, Node *tC)
 
         i++;
 
-        }
     }
+}
 
 
 Stack *newDeck()
@@ -754,14 +771,12 @@ void displayD(Stack * D)
 {
     Node *focusNode = D->head;
     int i = 1;
-
     while(focusNode != NULL)
     {
         printf("#%d Type: %c with level: %d\n", i, focusNode->type, focusNode->level);
         focusNode = focusNode->next;
         i++;
     }
-
     printf("\n\n");
 }
 */
@@ -875,7 +890,6 @@ void claimWinner(Stack *V1, Stack *V2)
     /*
     printf("\n[P1TG]: %d\t[P1TE]: %d\t[P1TN]: %d\t[P1TD]: %d\t[P1TK]: %d\t\n", P1TG, P1TE, P1TN, P1TD, P1TK);
     printf("[P1GMax]: %d\t[P1EMax]: %d\t[P1NMax]: %d\t[P1DMax]: %d\t[P1KMax]: %d\t\n", P1GMax, P1EMax, P1NMax, P1DMax, P1KMax);
-
     printf("\n[P2TG]: %d\t[P2TE]: %d\t[P2TN]: %d\t[P2TD]: %d\t[P2TK]: %d\t\n", P2TG, P2TE, P2TN, P2TD, P2TK);
     printf("[P2GMax]: %d\t[P2EMax]: %d\t[P2NMax]: %d\t[P2DMax]: %d\t[P2KMax]: %d\t\n", P2GMax, P2EMax, P2NMax, P2DMax, P2KMax);
     */
