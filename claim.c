@@ -72,9 +72,9 @@ void displayPDeck(Stack *D, Stack *P, Node *tC)
     int ac = 15;
     Texture2D tTemp;
 
-    Image bakcC = LoadImage("..\\cards\\fback.png");
-    Texture2D  tBack = LoadTextureFromImage(bakcC);
-    UnloadImage(bakcC);
+    Image backC = LoadImage("..\\cards\\fback.png");
+    Texture2D  tBack = LoadTextureFromImage(backC);
+    UnloadImage(backC);
 
     while(focusNodeP != NULL)
     {
