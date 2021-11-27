@@ -49,8 +49,8 @@ int main(void)
 
         if(start == 0)
         {
-            displayPDeck(D, P1, peek(D));
-            /*
+            //displayPDeck(D, P1, peek(D));
+
             while (peek(D) != NULL)
             {
                 itsGoTimeBBY(D, V1, V2, P1, P2, P1R2, P2R2);
