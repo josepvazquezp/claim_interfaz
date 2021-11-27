@@ -55,7 +55,7 @@ int main(void)
             {
                 itsGoTimeBBY(D, V1, V2, P1, P2, P1R2, P2R2);
             }
-
+            /*
             while (peek(P1R2) != NULL && peek(P2R2) != NULL)
             {
                 round2(D, V1, V2, P1R2, P2R2);

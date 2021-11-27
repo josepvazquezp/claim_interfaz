@@ -34,5 +34,8 @@ void drawStart();
 void drawTable(Stack *P);
 void displayDeckCard(Node *tC);
 void displayPDeck(Stack *D, Stack *P, Node *tC);
+void displaySelect(Stack *D, Node *pC);
+
+int selectCard();
 
 #endif

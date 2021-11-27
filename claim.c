@@ -51,23 +51,23 @@ void drawTable(Stack *P)
 
     DrawRectangle(1390, 382, 202, 135, WHITE);
 
-    DrawRectangle(657, 350, 137, 204, WHITE);
-    DrawRectangle(976, 350, 137, 204, WHITE);
+    DrawRectangle(657, 350, 135, 202, WHITE);
+    DrawRectangle(976, 350, 135, 202, WHITE);
 
     //CARTA DE COMBATE
-    DrawRectangle(657, 350, 135, 202, BLACK);
-    DrawRectangle(976, 350, 135, 202, BLACK);
+    DrawRectangle(657, 350, 131, 198, BLACK);
+    DrawRectangle(976, 350, 131, 198, BLACK);
     DrawText("VS", 843, 420, 60, WHITE);
     DrawText("VS", 840, 420, 60, RED);
 
-    DrawText("P1", 700, 558, 60, WHITE);
-    DrawText("P2", 1012, 558, 60, WHITE);
-    DrawText("P1", 698, 558, 60, RED);
-    DrawText("P2", 1010, 558, 60, RED);
-
-
-
-
+    Image P1 = LoadImage("..\\cards\\P1.png");
+    Texture2D TP1= LoadTextureFromImage(P1);
+    UnloadImage(P1);
+    DrawTexture(TP1, 653, 558, WHITE);
+    Image P2 = LoadImage("..\\cards\\P2.png");
+    Texture2D TP2= LoadTextureFromImage(P2);
+    UnloadImage(P2);
+    DrawTexture(TP2, 970, 560, WHITE);
 }
 
 void displayDeckCard(Node *tC)
@@ -125,6 +125,17 @@ void displayPDeck(Stack *D, Stack *P, Node *tC)
     }
 }
 
+void displaySelect(Stack *D, Node *pC)
+{
+    Image p = LoadImage(pC->card);
+    Texture2D tP = LoadTextureFromImage(p);
+    UnloadImage(p);
+
+    if(D->t == 0)
+        DrawTexture(tP, 657, 350, WHITE);
+    else if(D->t == 1)
+        DrawTexture(tP, 976, 350, WHITE);
+}
 
 Stack *newDeck()
 {
@@ -254,6 +265,41 @@ Stack *newPlayer(Stack *D)
     return p;
 }
 
+int selectCard()
+{
+    if(IsMouseButtonPressed(0))
+    {
+        if(GetMouseX() >= 13 && GetMouseX() <= 148 && GetMouseY() >= 8 && GetMouseY() <= 210)
+            return 1;
+        else if(GetMouseX() >= 173 && GetMouseX() <= 308 && GetMouseY() >= 8 && GetMouseY() <= 210)
+            return 2;
+        else if(GetMouseX() >= 333 && GetMouseX() <= 468 && GetMouseY() >= 8 && GetMouseY() <= 210)
+            return 3;
+        else if(GetMouseX() >= 493 && GetMouseX() <= 628 && GetMouseY() >= 8 && GetMouseY() <= 210)
+            return 4;
+        else if(GetMouseX() >= 653 && GetMouseX() <= 788 && GetMouseY() >= 8 && GetMouseY() <= 210)
+            return 5;
+        else if(GetMouseX() >= 813 && GetMouseX() <= 948 && GetMouseY() >= 8 && GetMouseY() <= 210)
+            return 6;
+        else if(GetMouseX() >= 973 && GetMouseX() <= 1108 && GetMouseY() >= 8 && GetMouseY() <= 210)
+            return 7;
+        else if(GetMouseX() >= 1133 && GetMouseX() <= 1268 && GetMouseY() >= 8 && GetMouseY() <= 210)
+            return 8;
+        else if(GetMouseX() >= 1293 && GetMouseX() <= 1428 && GetMouseY() >= 8 && GetMouseY() <= 210)
+            return 9;
+        else if(GetMouseX() >= 1453 && GetMouseX() <= 1588 && GetMouseY() >= 8 && GetMouseY() <= 210)
+            return 10;
+        else if(GetMouseX() >= 13 && GetMouseX() <= 148 && GetMouseY() >= 218 && GetMouseY() <= 420)
+            return 11;
+        else if(GetMouseX() >= 173 && GetMouseX() <= 308 && GetMouseY() >= 218 && GetMouseY() <= 420)
+            return 12;
+        else if(GetMouseX() >= 333 && GetMouseX() <= 468 && GetMouseY() >= 218 && GetMouseY() <= 420)
+            return 13;
+        else
+            return 0;
+    }
+}
+
 void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P1R2, Stack *P2R2)
 {
 
@@ -262,18 +308,24 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
     Node *nT;
     Node *nT2;
     Node *r;
-    int c;
+    int c = 0;
     int i;
 
     //printf("[Deck] Type: %c level: %d\n\n", tC->type, tC->level);
-    displayPDeck(D, P1, tC);
-    return;
 
     if(D->t == 0)
     {
         //displayD(P1);
         //printf("[P1] Introduce nUm de carta: ");
         //scanf("%d", &c);
+        displayPDeck(D, P1, tC);
+
+        do
+        {
+            c = selectCard();
+            DrawText("P1", 1453, 588, 80, PINK);
+        } while(c == 0);
+
         for(i = 0 ; i < c ; i++)
         {
             r = pop(P1);
@@ -295,6 +347,15 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
         //displayD(P2);
         //printf("[P2] Introduce nUm de carta: ");
         //scanf("%d", &c);
+        displayPDeck(D, P2, tC);
+        displaySelect(D, nT);
+
+        do
+        {
+            c = selectCard();
+            DrawText("P2", 1453, 588, 80, BLUE);
+        } while(c == 0);
+
         for(i = 0 ; i < c ; i++)
         {
             r = pop(P2);
@@ -302,6 +363,7 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
         }
 
         nT2 = pop(temp);
+        displaySelect(D, nT2);
         P2->cN--;
 
         while(peek(temp) != NULL)
@@ -316,6 +378,14 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
         //displayD(P2);
         //printf("[P2] Introduce nUm de carta: ");
         //scanf("%d", &c);
+        displayPDeck(D, P2, tC);
+
+        do
+        {
+            c = selectCard();
+            DrawText("P2", 1453, 588, 80, BLUE);
+        } while(c == 0);
+
         for(i = 0 ; i < c ; i++)
         {
             r = pop(P2);
@@ -336,6 +406,15 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
         //displayD(P1);
         //printf("[P1] Introduce nUm de carta: ");
         //scanf("%d", &c);
+        displayPDeck(D, P1, tC);
+        displaySelect(D, nT2);
+
+        do
+        {
+            c = selectCard();
+            DrawText("P1", 1453, 588, 80, PINK);
+        } while(c == 0);
+
         for(i = 0 ; i < c ; i++)
         {
             r = pop(P1);
@@ -343,6 +422,7 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
         }
 
         nT = pop(temp);
+        displaySelect(D, nT);
         P1->cN--;
 
         while(peek(temp) != NULL)
