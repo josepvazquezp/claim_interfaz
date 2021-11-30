@@ -12,13 +12,13 @@ int main(void)
     int start = 1;
     int shuffleR = 1;
 
-    Stack *V1;
-    Stack *V2;
-    Stack *D;
-    Stack *P1R2;
-    Stack *P2R2;
-    Stack *P1;
-    Stack *P2;
+    Stack *V1 = newStack();
+    Stack *V2 = newStack();
+    Stack *D = newStack();
+    Stack *P1R2 = newStack();
+    Stack *P2R2 = newStack();
+    Stack *P1 = newStack();
+    Stack *P2 = newStack();
 
     InitWindow(screenWidth, screenHeight, "CLAIM");
 

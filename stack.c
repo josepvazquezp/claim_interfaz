@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "stack.h"
 #include "claim.h"
 
@@ -29,6 +30,7 @@ void push(Stack* s, Node* data)
         s->head = malloc(sizeof(Node));
         s->head->level = data->level;
         s->head->type = data->type;
+        strcpy(s->head->card, data->card);
         s->head->next = NULL;
         return;
     }
@@ -36,6 +38,7 @@ void push(Stack* s, Node* data)
     Node* n = malloc(sizeof(Node));
     n->level = data->level;
     n->type = data->type;
+    strcpy(n->card, data->card);
     n->next = s->head;
     s->head = n;
 
@@ -50,6 +53,7 @@ void* pop(Stack* s)
     Node* toRet = malloc(sizeof(Node));
     toRet->level = s->head->level;
     toRet->type = s->head->type;
+    strcpy(toRet->card, s->head->card);
     s->head = s->head->next;
     free(toDel);
 
