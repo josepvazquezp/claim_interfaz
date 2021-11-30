@@ -7,7 +7,7 @@ struct node
 {
     int level;
     char type;
-    char card[16];
+    char card[12];
     struct node *next;
 };
 

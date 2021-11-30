@@ -6,6 +6,7 @@
 #include "stack.h"
 #include "raylib.h"
 
+
 void drawStart()
 {
     Color backGround = {23, 32, 42, 255};
@@ -17,7 +18,7 @@ void drawStart()
 
 void drawTable(Stack *P)
 {
-    Image backG = LoadImage("..\\cards\\Tablero.png");
+    Image backG = LoadImage("cards/Tablero.png");
     Texture2D textureBack = LoadTextureFromImage(backG);
     UnloadImage(backG);
     DrawTexture(textureBack, 0, 0, WHITE);
@@ -60,11 +61,11 @@ void drawTable(Stack *P)
     DrawText("VS", 843, 420, 60, WHITE);
     DrawText("VS", 840, 420, 60, RED);
 
-    Image P1 = LoadImage("..\\cards\\P1.png");
+    Image P1 = LoadImage("cards/P1.png");
     Texture2D TP1= LoadTextureFromImage(P1);
     UnloadImage(P1);
     DrawTexture(TP1, 653, 558, WHITE);
-    Image P2 = LoadImage("..\\cards\\P2.png");
+    Image P2 = LoadImage("cards/P2.png");
     Texture2D TP2= LoadTextureFromImage(P2);
     UnloadImage(P2);
     DrawTexture(TP2, 970, 560, WHITE);
@@ -91,7 +92,7 @@ void displayPDeck(Stack *D, Stack *P, Node *tC)
     int ac = 15;
     Texture2D tTemp;
 
-    Image backC = LoadImage("..\\cards\\fback.png");
+    Image backC = LoadImage("cards/fback.png");
     Image tI;
     Texture2D  tBack = LoadTextureFromImage(backC);
     UnloadImage(backC);
@@ -200,7 +201,7 @@ Stack *newDeck()
 
     Node *focusNode;
 
-    char root[] = "..\\cards\\G0.png";
+    char root[] = "cards/G0.png";
     Image iTemp;
     Texture2D tTemp;
 
@@ -215,8 +216,8 @@ Stack *newDeck()
             D->head->type = temp[i][1];
             D->head->next = NULL;
 
-            root[9] = temp[i][1];
-            root[10] = temp[i][0];
+            root[6] = temp[i][1];
+            root[7] = temp[i][0];
 
             strcpy(D->head->card, root);
 
@@ -233,8 +234,8 @@ Stack *newDeck()
             focusNode->type = temp[i][1];
             focusNode->next = NULL;
 
-            root[9] = temp[i][1];
-            root[10] = temp[i][0];
+            root[6] = temp[i][1];
+            root[7] = temp[i][0];
 
             strcpy(focusNode->card, root);;
         }
@@ -298,11 +299,11 @@ int selectCard()
         else
             return 0;
     }
+    return 0;
 }
 
 void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P1R2, Stack *P2R2)
 {
-
     Stack *temp = newStack();
     Node *tC = pop(D);
     Node *nT;
@@ -320,25 +321,23 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
         //scanf("%d", &c);
         displayPDeck(D, P1, tC);
 
-        do
-        {
-            c = selectCard();
-            DrawText("P1", 1453, 588, 80, PINK);
-        } while(c == 0);
+        c = selectCard();
+        DrawText("P1", 1453, 560, 80, PINK);
 
-        for(i = 0 ; i < c ; i++)
+        if(c != 0)
         {
-            r = pop(P1);
-            push(temp, r);
-        }
+            for (i = 0; i < c; i++) {
+                r = pop(P1);
+                push(temp, r);
+            }
 
-        nT = pop(temp);
-        P1->cN--;
+            nT = pop(temp);
+            P1->cN--;
 
-        while(peek(temp) != NULL)
-        {
-            r = pop(temp);
-            push(P1, r);
+            while (peek(temp) != NULL) {
+                r = pop(temp);
+                push(P1, r);
+            }
         }
         //printf("\n\n");
 
@@ -350,26 +349,26 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
         displayPDeck(D, P2, tC);
         displaySelect(D, nT);
 
-        do
-        {
-            c = selectCard();
-            DrawText("P2", 1453, 588, 80, BLUE);
-        } while(c == 0);
+        c = selectCard();
+        DrawText("P2", 1453, 560, 80, BLUE);
 
-        for(i = 0 ; i < c ; i++)
+        if(c != 0)
         {
-            r = pop(P2);
-            push(temp, r);
-        }
+            for (i = 0; i < c; i++)
+            {
+                r = pop(P2);
+                push(temp, r);
+            }
 
-        nT2 = pop(temp);
-        displaySelect(D, nT2);
-        P2->cN--;
+            nT2 = pop(temp);
+            displaySelect(D, nT2);
+            P2->cN--;
 
-        while(peek(temp) != NULL)
-        {
-            r = pop(temp);
-            push(P2, r);
+            while (peek(temp) != NULL)
+            {
+                r = pop(temp);
+                push(P2, r);
+            }
         }
         //printf("\n\n");
     }
@@ -380,25 +379,25 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
         //scanf("%d", &c);
         displayPDeck(D, P2, tC);
 
-        do
-        {
-            c = selectCard();
-            DrawText("P2", 1453, 588, 80, BLUE);
-        } while(c == 0);
+        c = selectCard();
+        DrawText("P2", 1453, 588, 80, BLUE);
 
-        for(i = 0 ; i < c ; i++)
+        if(c != 0)
         {
-            r = pop(P2);
-            push(temp, r);
-        }
+            for (i = 0; i < c; i++)
+            {
+                r = pop(P2);
+                push(temp, r);
+            }
 
-        nT2 = pop(temp);
-        P2->cN--;
+            nT2 = pop(temp);
+            P2->cN--;
 
-        while(peek(temp) != NULL)
-        {
-            r = pop(temp);
-            push(P2, r);
+            while (peek(temp) != NULL)
+            {
+                r = pop(temp);
+                push(P2, r);
+            }
         }
         //printf("\n\n");
 
@@ -409,26 +408,26 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
         displayPDeck(D, P1, tC);
         displaySelect(D, nT2);
 
-        do
-        {
-            c = selectCard();
-            DrawText("P1", 1453, 588, 80, PINK);
-        } while(c == 0);
+        c = selectCard();
+        DrawText("P1", 1453, 588, 80, PINK);
 
-        for(i = 0 ; i < c ; i++)
+        if(c != 0)
         {
-            r = pop(P1);
-            push(temp, r);
-        }
+            for (i = 0; i < c; i++)
+            {
+                r = pop(P1);
+                push(temp, r);
+            }
 
-        nT = pop(temp);
-        displaySelect(D, nT);
-        P1->cN--;
+            nT = pop(temp);
+            displaySelect(D, nT);
+            P1->cN--;
 
-        while(peek(temp) != NULL)
-        {
-            r = pop(temp);
-            push(P1, r);
+            while (peek(temp) != NULL)
+            {
+                r = pop(temp);
+                push(P1, r);
+            }
         }
         //printf("\n\n");
     }

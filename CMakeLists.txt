@@ -28,6 +28,7 @@ if (NOT raylib_FOUND) # If there's none, fetch and build raylib
 endif()
 
 # This is the main part:
+file(COPY ${PROJECT_SOURCE_DIR}/cards DESTINATION ${PROJECT_BINARY_DIR})
 
 add_executable(${PROJECT_NAME} main.c claim.c claim.h stack.c stack.h)
 #set(raylib_VERBOSE 1)
