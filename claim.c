@@ -132,9 +132,13 @@ void displaySelect(Stack *D, Node *pC)
     Texture2D tP = LoadTextureFromImage(p);
     UnloadImage(p);
 
-    if(D->t == 0)
+    if(D->Round1Turn == 0)
         DrawTexture(tP, 657, 350, WHITE);
-    else if(D->t == 1)
+    if(D->Round1Turn == 3)
+        DrawTexture(tP, 657, 350, WHITE);
+    else if(D->Round1Turn == 1)
+        DrawTexture(tP, 976, 350, WHITE);
+    else if(D->Round1Turn == 2)
         DrawTexture(tP, 976, 350, WHITE);
 }
 
@@ -311,13 +315,10 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
     Node *r = NULL;
     int c = 0;
     int i = 0;
-    int bUp = 0;
     int nexTurn = D->t;
     int jugaron2 = 0;
     int EndTurn = 0;
 
-    if (IsMouseButtonUp(MOUSE_LEFT_BUTTON))
-        bUp = 0;
     if (IsKeyPressed(KEY_Q))
         c = 1;
     else if (IsKeyPressed(KEY_W))
@@ -347,104 +348,45 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
 
 
 
+
     //printf("[Deck] Type: %c level: %d\n\n", tC->type, tC->level);
-
-    if (D->Round1Turn == 0) {
-
-
-        //displayD(P1);
-        //printf("[P1] Introduce nUm de carta: ");
-        //scanf("%d", &c);
-        displayPDeck(D, P1, tC);
-
-
-
-        //c = selectCard();
-        DrawText("P1", 1455, 560, 80, WHITE);
-        DrawText("P1", 1453, 560, 80, PINK);
-        if (c != 0)
-            bUp++;
-        else
-            bUp = 0;
-
-        if (bUp != 0) {
-            for (i = 0; i < c; i++) {
-                r = pop(P1);
-                if (r != NULL)
-                    push(temp, r);
-            }
-
-            nT = pop(temp);
-            P1->cN--;
-
-            while (peek(temp) != NULL) {
-                r = pop(temp);
-                if (r != NULL)
-                    push(P1, r);
-            }
-
-            //printf("\n\n");
-
-            //printf("[P1] juega: %c%d\n", nT->type, nT->level);
-
-            //displayD(P2);
-            //printf("[P2] Introduce nUm de carta: ");
-            //scanf("%d", &c);
-            nexTurn++;
-            c = 0;
-            displaySelect(D, nT);
-            D->Round1Turn = 1;
-
-        }
-
-    }
-
-        if( D->Round1Turn == 1 ) {
-
-
-            displayPDeck(D, P2, tC);
+    if (D->t == 0) {
+        if (D->Round1Turn == 0) {displayPDeck(D, P1, tC);
 
 
             //c = selectCard();
-            DrawText("P2", 1455, 560, 80, WHITE);
-            DrawText("P2", 1453, 560, 80, BLUE);
+            DrawText("P1", 1455, 588, 80, WHITE);
+            DrawText("P1", 1453, 588, 80, PINK);
 
-            if (c != 0)
-                bUp++;
-            else
-                bUp = 0;
 
-            if (bUp != 0) {
+
+            if (c != 0) {
                 for (i = 0; i < c; i++) {
-                    r = pop(P2);
-                    if (r != NULL)
-                        push(temp, r);
+                    r = pop(P1);
+                    push(temp, r);
                 }
 
-                nT2 = pop(temp);
-                displaySelect(D, nT2);
-                P2->cN--;
+                nT = pop(temp);
+                D->nT = nT;
+                displaySelect(D, D->nT);
+                P1->cN--;
 
                 while (peek(temp) != NULL) {
                     r = pop(temp);
-                    if (r != NULL)
-                        push(P2, r);
+                    push(P1, r);
                 }
-
-                jugaron2 = 1;
                 pop(D);
+                jugaron2 = 1;
                 c = 0;
+                D->Round1Turn = 1;
             }
-            //printf("\n\n");
-
 
 
         }
 
+        }
 
-
-
-    else if(D->Round1Turn == 2) {
+        if (D->Round1Turn == 1) {
             //displayD(P2);
             //printf("[P2] Introduce nUm de carta: ");
             //scanf("%d", &c);
@@ -453,12 +395,8 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
             //c = selectCard();
             DrawText("P2", 1455, 588, 80, WHITE);
             DrawText("P2", 1453, 588, 80, BLUE);
-            if (c != 0)
-                bUp++;
-            else
-                bUp = 0;
 
-            if (bUp != 0) {
+            if (c != 0) {
                 for (i = 0; i < c; i++) {
                     r = pop(P2);
                     push(temp, r);
@@ -471,10 +409,50 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
                     r = pop(temp);
                     push(P2, r);
                 }
-                nexTurn = 0;
                 c = 0;
-                displaySelect(D, nT2);
-                D->Round1Turn = 3;
+                D->nT2 = nT2;
+                displaySelect(D, D->nT2);
+                D->Round1Turn = 0;
+                D->t=1;
+            }
+
+            //printf("\n\n");
+
+
+
+        }
+
+
+
+
+    else if (D->t == 1) {
+        if (D->Round1Turn == 1) {
+            //displayD(P2);
+            //printf("[P2] Introduce nUm de carta: ");
+            //scanf("%d", &c);
+            displayPDeck(D, P2, tC);
+
+            //c = selectCard();
+            DrawText("P2", 1455, 588, 80, WHITE);
+            DrawText("P2", 1453, 588, 80, BLUE);
+
+            if (c != 0) {
+                for (i = 0; i < c; i++) {
+                    r = pop(P2);
+                    push(temp, r);
+                }
+
+                nT2 = pop(temp);
+                P2->cN--;
+
+                while (peek(temp) != NULL) {
+                    r = pop(temp);
+                    push(P2, r);
+                }
+                c = 0;
+                D->nT2 = nT2;
+                displaySelect(D, D->nT2);
+                D->Round1Turn = 0;
             }
             //printf("\n\n");
 
@@ -483,9 +461,7 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
             //printf("[P1] Introduce nUm de carta: ");
             //scanf("%d", &c);
 
-        }
-
-        else if(D->Round1Turn == 3 && nexTurn == 0 ) {
+        } else if (D->Round1Turn == 0 ) {
             displayPDeck(D, P1, tC);
 
 
@@ -493,19 +469,17 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
             DrawText("P1", 1455, 588, 80, WHITE);
             DrawText("P1", 1453, 588, 80, PINK);
 
-            if (c != 0)
-                bUp++;
-            else
-                bUp = 0;
 
-            if (bUp != 0) {
+
+            if (c != 0) {
                 for (i = 0; i < c; i++) {
                     r = pop(P1);
                     push(temp, r);
                 }
 
                 nT = pop(temp);
-                displaySelect(D, nT);
+                D->nT = nT;
+                displaySelect(D, D->nT);
                 P1->cN--;
 
                 while (peek(temp) != NULL) {
@@ -513,12 +487,15 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
                     push(P1, r);
                 }
                 pop(D);
-                jugaron2=1;
-                c=0;
+                jugaron2 = 1;
+                c = 0;
+                D->Round1Turn = 1;
             }
 
 
         }
+
+    }
 
         //printf("\n\n");
 
