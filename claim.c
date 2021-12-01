@@ -7,6 +7,7 @@
 #include "raylib.h"
 
 
+
 void drawStart()
 {
     Color backGround = {23, 32, 42, 255};
@@ -127,6 +128,7 @@ void displayPDeck(Stack *D, Stack *P, Node *tC)
 
 void displaySelect(Node *nT, Node *nT2)
 {
+<<<<<<< HEAD
     if(nT != NULL)
     {
         Image p1 = LoadImage(nT->card);
@@ -141,6 +143,20 @@ void displaySelect(Node *nT, Node *nT2)
         UnloadImage(p2);
         DrawTexture(tP2, 976, 350, WHITE);
     }
+=======
+    Image p = LoadImage(pC->card);
+    Texture2D tP = LoadTextureFromImage(p);
+    UnloadImage(p);
+
+    if(D->Round1Turn == 0)
+        DrawTexture(tP, 657, 350, WHITE);
+    if(D->Round1Turn == 3)
+        DrawTexture(tP, 657, 350, WHITE);
+    else if(D->Round1Turn == 1)
+        DrawTexture(tP, 976, 350, WHITE);
+    else if(D->Round1Turn == 2)
+        DrawTexture(tP, 976, 350, WHITE);
+>>>>>>> eb03667689647f0abfd50b31fe97a97de03a3cd3
 }
 
 Stack *newDeck()
@@ -272,6 +288,7 @@ Stack *newPlayer(Stack *D)
 }
 
 int selectCard()
+<<<<<<< HEAD
 {
     if (IsKeyPressed(KEY_Q))
         return 1;
@@ -449,6 +466,242 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
         //printf("[P1] Type: %c level: %d\n", nT->type, nT->level);
         //printf("[P2] Type: %c level: %d\n", nT2->type, nT2->level);
 
+=======
+{   int clicked=0;
+
+        if (IsMouseButtonPressed(0)) {
+            if (GetMouseX() >= 13 && GetMouseX() <= 148 && GetMouseY() >= 8 && GetMouseY() <= 210)
+                return 1;
+            else if (GetMouseX() >= 173 && GetMouseX() <= 308 && GetMouseY() >= 8 && GetMouseY() <= 210)
+                return 2;
+            else if (GetMouseX() >= 333 && GetMouseX() <= 468 && GetMouseY() >= 8 && GetMouseY() <= 210)
+                return 3;
+            else if (GetMouseX() >= 493 && GetMouseX() <= 628 && GetMouseY() >= 8 && GetMouseY() <= 210)
+                return 4;
+            else if (GetMouseX() >= 653 && GetMouseX() <= 788 && GetMouseY() >= 8 && GetMouseY() <= 210)
+                return 5;
+            else if (GetMouseX() >= 813 && GetMouseX() <= 948 && GetMouseY() >= 8 && GetMouseY() <= 210)
+                return 6;
+            else if (GetMouseX() >= 973 && GetMouseX() <= 1108 && GetMouseY() >= 8 && GetMouseY() <= 210)
+                return 7;
+            else if (GetMouseX() >= 1133 && GetMouseX() <= 1268 && GetMouseY() >= 8 && GetMouseY() <= 210)
+                return 8;
+            else if (GetMouseX() >= 1293 && GetMouseX() <= 1428 && GetMouseY() >= 8 && GetMouseY() <= 210)
+                return 9;
+            else if (GetMouseX() >= 1453 && GetMouseX() <= 1588 && GetMouseY() >= 8 && GetMouseY() <= 210)
+                return 10;
+            else if (GetMouseX() >= 13 && GetMouseX() <= 148 && GetMouseY() >= 218 && GetMouseY() <= 420)
+                return 11;
+            else if (GetMouseX() >= 173 && GetMouseX() <= 308 && GetMouseY() >= 218 && GetMouseY() <= 420)
+                return 12;
+            else if (GetMouseX() >= 333 && GetMouseX() <= 468 && GetMouseY() >= 218 && GetMouseY() <= 420)
+                return 13;
+            else
+                return 0;
+        }
+    return 0;
+    printf("HOLLAAAA");
+}
+
+void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P1R2, Stack *P2R2) {
+    Stack *temp = newStack();
+    Node *tC = peek(D);
+    Node *nT = NULL;
+    Node *nT2 = NULL;
+    Node *r = NULL;
+    int c = 0;
+    int i = 0;
+    int nexTurn = D->t;
+    int jugaron2 = 0;
+    int EndTurn = 0;
+
+    if (IsKeyPressed(KEY_Q))
+        c = 1;
+    else if (IsKeyPressed(KEY_W))
+        c = 2;
+    else if (IsKeyPressed(KEY_E))
+        c = 3;
+    else if (IsKeyPressed(KEY_R))
+        c = 4;
+    else if (IsKeyPressed(KEY_T))
+        c = 5;
+    else if (IsKeyPressed(KEY_Y))
+        c = 6;
+    else if (IsKeyPressed(KEY_U))
+        c = 7;
+    else if (IsKeyPressed(KEY_I))
+        c = 8;
+    else if (IsKeyPressed(KEY_O))
+        c = 9;
+    else if (IsKeyPressed(KEY_P))
+        c = 10;
+    else if (IsKeyPressed(KEY_A))
+        c = 11;
+    else if (IsKeyPressed(KEY_S))
+        c = 12;
+    else if (IsKeyPressed(KEY_D))
+        c = 13;
+
+
+
+
+    //printf("[Deck] Type: %c level: %d\n\n", tC->type, tC->level);
+    if (D->t == 0) {
+        if (D->Round1Turn == 0) {displayPDeck(D, P1, tC);
+
+
+            //c = selectCard();
+            DrawText("P1", 1455, 588, 80, WHITE);
+            DrawText("P1", 1453, 588, 80, PINK);
+
+
+
+            if (c != 0) {
+                for (i = 0; i < c; i++) {
+                    r = pop(P1);
+                    push(temp, r);
+                }
+
+                nT = pop(temp);
+                D->nT = nT;
+                displaySelect(D, D->nT);
+                P1->cN--;
+
+                while (peek(temp) != NULL) {
+                    r = pop(temp);
+                    push(P1, r);
+                }
+                pop(D);
+                jugaron2 = 1;
+                c = 0;
+                D->Round1Turn = 1;
+            }
+
+
+        }
+
+        }
+
+        if (D->Round1Turn == 1) {
+            //displayD(P2);
+            //printf("[P2] Introduce nUm de carta: ");
+            //scanf("%d", &c);
+            displayPDeck(D, P2, tC);
+
+            //c = selectCard();
+            DrawText("P2", 1455, 588, 80, WHITE);
+            DrawText("P2", 1453, 588, 80, BLUE);
+
+            if (c != 0) {
+                for (i = 0; i < c; i++) {
+                    r = pop(P2);
+                    push(temp, r);
+                }
+
+                nT2 = pop(temp);
+                P2->cN--;
+
+                while (peek(temp) != NULL) {
+                    r = pop(temp);
+                    push(P2, r);
+                }
+                c = 0;
+                D->nT2 = nT2;
+                displaySelect(D, D->nT2);
+                D->Round1Turn = 0;
+                D->t=1;
+            }
+
+            //printf("\n\n");
+
+
+
+        }
+
+
+
+
+    else if (D->t == 1) {
+        if (D->Round1Turn == 1) {
+            //displayD(P2);
+            //printf("[P2] Introduce nUm de carta: ");
+            //scanf("%d", &c);
+            displayPDeck(D, P2, tC);
+
+            //c = selectCard();
+            DrawText("P2", 1455, 588, 80, WHITE);
+            DrawText("P2", 1453, 588, 80, BLUE);
+
+            if (c != 0) {
+                for (i = 0; i < c; i++) {
+                    r = pop(P2);
+                    push(temp, r);
+                }
+
+                nT2 = pop(temp);
+                P2->cN--;
+
+                while (peek(temp) != NULL) {
+                    r = pop(temp);
+                    push(P2, r);
+                }
+                c = 0;
+                D->nT2 = nT2;
+                displaySelect(D, D->nT2);
+                D->Round1Turn = 0;
+            }
+            //printf("\n\n");
+
+            //printf("[P2] juega: %c%d\n", nT2->type, nT2->level);
+            //displayD(P1);
+            //printf("[P1] Introduce nUm de carta: ");
+            //scanf("%d", &c);
+
+        } else if (D->Round1Turn == 0 ) {
+            displayPDeck(D, P1, tC);
+
+
+            //c = selectCard();
+            DrawText("P1", 1455, 588, 80, WHITE);
+            DrawText("P1", 1453, 588, 80, PINK);
+
+
+
+            if (c != 0) {
+                for (i = 0; i < c; i++) {
+                    r = pop(P1);
+                    push(temp, r);
+                }
+
+                nT = pop(temp);
+                D->nT = nT;
+                displaySelect(D, D->nT);
+                P1->cN--;
+
+                while (peek(temp) != NULL) {
+                    r = pop(temp);
+                    push(P1, r);
+                }
+                pop(D);
+                jugaron2 = 1;
+                c = 0;
+                D->Round1Turn = 1;
+            }
+
+
+        }
+
+    }
+
+        //printf("\n\n");
+
+
+
+    //printf("[Deck] Type: %c level: %d\n", tC->type, tC->level);
+    //printf("[P1] Type: %c level: %d\n", nT->type, nT->level);
+    //printf("[P2] Type: %c level: %d\n", nT2->type, nT2->level);
+    if (jugaron2=1) {
+>>>>>>> eb03667689647f0abfd50b31fe97a97de03a3cd3
         if (nT != NULL && nT2 != NULL) {
             if (nT->type == nT2->type || nT->type == 'D' || nT2->type == 'D') //comparacion de nivel y comodin
             {
@@ -544,6 +797,7 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
                     push(P2R2, tC);
                     D->t = 1;
                 }
+<<<<<<< HEAD
 
                 if (D->t == 0) {
                     tC = pop(D);
@@ -559,13 +813,26 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
             nT2 = NULL;
         }
         EndDrawing();
-    }
+=======
+            }
 
-    //displayD(P1R2);
-    //displayD(V1);
-    //printf("--------\n\n");
-    //displayD(P2R2);
-    //displayD(V2);
+            if (D->t == 0) {
+                tC = pop(D);
+                push(P2R2, tC);
+            } else if (D->t == 1) {
+                tC = pop(D);
+                push(P1R2, tC);
+            }
+        }
+
+        //displayD(P1R2);
+        //displayD(V1);
+        //printf("--------\n\n");
+        //displayD(P2R2);
+        //displayD(V2);
+>>>>>>> eb03667689647f0abfd50b31fe97a97de03a3cd3
+    }
+    c=0;
 }
 
 void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2)
@@ -834,7 +1101,9 @@ void displayD(Stack * D)
     }
     printf("\n\n");
 }
+
 */
+
 void claimWinner(Stack *V1, Stack *V2)
 {
     int P1TG = 0;
