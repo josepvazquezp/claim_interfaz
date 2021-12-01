@@ -125,16 +125,22 @@ void displayPDeck(Stack *D, Stack *P, Node *tC)
     }
 }
 
-void displaySelect(Stack *D, Node *pC)
+void displaySelect(Node *nT, Node *nT2)
 {
-    Image p = LoadImage(pC->card);
-    Texture2D tP = LoadTextureFromImage(p);
-    UnloadImage(p);
-
-    if(D->t == 0)
-        DrawTexture(tP, 657, 350, WHITE);
-    else if(D->t == 1)
-        DrawTexture(tP, 976, 350, WHITE);
+    if(nT != NULL)
+    {
+        Image p1 = LoadImage(nT->card);
+        Texture2D tP1 = LoadTextureFromImage(p1);
+        UnloadImage(p1);
+        DrawTexture(tP1, 657, 350, WHITE);
+    }
+    if(nT2 != NULL)
+    {
+        Image p2 = LoadImage(nT2->card);
+        Texture2D tP2 = LoadTextureFromImage(p2);
+        UnloadImage(p2);
+        DrawTexture(tP2, 976, 350, WHITE);
+    }
 }
 
 Stack *newDeck()
@@ -267,288 +273,292 @@ Stack *newPlayer(Stack *D)
 
 int selectCard()
 {
-    if(IsMouseButtonPressed(0))
-    {
-        if(GetMouseX() >= 13 && GetMouseX() <= 148 && GetMouseY() >= 8 && GetMouseY() <= 210)
-            return 1;
-        else if(GetMouseX() >= 173 && GetMouseX() <= 308 && GetMouseY() >= 8 && GetMouseY() <= 210)
-            return 2;
-        else if(GetMouseX() >= 333 && GetMouseX() <= 468 && GetMouseY() >= 8 && GetMouseY() <= 210)
-            return 3;
-        else if(GetMouseX() >= 493 && GetMouseX() <= 628 && GetMouseY() >= 8 && GetMouseY() <= 210)
-            return 4;
-        else if(GetMouseX() >= 653 && GetMouseX() <= 788 && GetMouseY() >= 8 && GetMouseY() <= 210)
-            return 5;
-        else if(GetMouseX() >= 813 && GetMouseX() <= 948 && GetMouseY() >= 8 && GetMouseY() <= 210)
-            return 6;
-        else if(GetMouseX() >= 973 && GetMouseX() <= 1108 && GetMouseY() >= 8 && GetMouseY() <= 210)
-            return 7;
-        else if(GetMouseX() >= 1133 && GetMouseX() <= 1268 && GetMouseY() >= 8 && GetMouseY() <= 210)
-            return 8;
-        else if(GetMouseX() >= 1293 && GetMouseX() <= 1428 && GetMouseY() >= 8 && GetMouseY() <= 210)
-            return 9;
-        else if(GetMouseX() >= 1453 && GetMouseX() <= 1588 && GetMouseY() >= 8 && GetMouseY() <= 210)
-            return 10;
-        else if(GetMouseX() >= 13 && GetMouseX() <= 148 && GetMouseY() >= 218 && GetMouseY() <= 420)
-            return 11;
-        else if(GetMouseX() >= 173 && GetMouseX() <= 308 && GetMouseY() >= 218 && GetMouseY() <= 420)
-            return 12;
-        else if(GetMouseX() >= 333 && GetMouseX() <= 468 && GetMouseY() >= 218 && GetMouseY() <= 420)
-            return 13;
-        else
-            return 0;
-    }
-    return 0;
+    if (IsKeyPressed(KEY_Q))
+        return 1;
+    else if (IsKeyPressed(KEY_W))
+        return 2;
+    else if (IsKeyPressed(KEY_E))
+       return 3;
+    else if (IsKeyPressed(KEY_R))
+        return 4;
+    else if (IsKeyPressed(KEY_T))
+        return 5;
+    else if (IsKeyPressed(KEY_Y))
+        return 6;
+    else if (IsKeyPressed(KEY_U))
+        return 7;
+    else if (IsKeyPressed(KEY_I))
+        return 8;
+    else if (IsKeyPressed(KEY_O))
+        return 9;
+    else if (IsKeyPressed(KEY_P))
+        return 10;
+    else if (IsKeyPressed(KEY_A))
+        return 11;
+    else if (IsKeyPressed(KEY_S))
+        return 12;
+    else if (IsKeyPressed(KEY_D))
+        return 13;
+    else
+        return 0;
 }
 
-void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P1R2, Stack *P2R2)
+
+
+void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P1R2, Stack *P2R2, Node *tC, Node *nT, Node *nT2)
 {
     Stack *temp = newStack();
-    Node *tC = pop(D);
-    Node *nT = NULL;
-    Node *nT2 = NULL;
-    Node *r = NULL;
-    int c = 0;
-    int i = 0;
-
-    //printf("[Deck] Type: %c level: %d\n\n", tC->type, tC->level);
-
-    if(D->t == 0)
-    {
-        //displayD(P1);
-        //printf("[P1] Introduce nUm de carta: ");
-        //scanf("%d", &c);
-        displayPDeck(D, P1, tC);
+    while(peek(D) != NULL && !WindowShouldClose()) {
+        BeginDrawing();
+        tC = peek(D);
+        Node *r = NULL;
+        int c = 0;
+        int i = 0;
 
         c = selectCard();
-        DrawText("P1", 1455, 560, 80, WHITE);
-        DrawText("P1", 1453, 560, 80, PINK);
 
-        if(c != 0)
-        {
-            for(i = 0; i < c; i++)
-            {
-                r = pop(P1);
-                if(r != NULL)
-                    push(temp, r);
-            }
-
-            nT = pop(temp);
-            P1->cN--;
-
-            while(peek(temp) != NULL)
-            {
-                r = pop(temp);
-                if(r != NULL)
-                    push(P1, r);
-            }
-        }
-        //printf("\n\n");
-
-        //printf("[P1] juega: %c%d\n", nT->type, nT->level);
-
-        //displayD(P2);
-        //printf("[P2] Introduce nUm de carta: ");
-        //scanf("%d", &c);
-
-        displayPDeck(D, P2, tC);
-        displaySelect(D, nT);
-
-        c = selectCard();
-        DrawText("P2", 1455, 560, 80, WHITE);
-        DrawText("P2", 1453, 560, 80, BLUE);
-
-        if(c != 0)
-        {
-            for(i = 0; i < c; i++)
-            {
-                r = pop(P2);
-                if(r != NULL)
-                    push(temp, r);
-            }
-
-            nT2 = pop(temp);
-            displaySelect(D, nT2);
-            P2->cN--;
-
-            while(peek(temp) != NULL)
-            {
-                r = pop(temp);
-                if(r != NULL)
-                    push(P2, r);
-            }
-        }
-        //printf("\n\n");
-    }
-    else if(D->t == 1)
-    {
-        //displayD(P2);
-        //printf("[P2] Introduce nUm de carta: ");
-        //scanf("%d", &c);
-        displayPDeck(D, P2, tC);
-
-        c = selectCard();
-        DrawText("P2", 1455, 588, 80, WHITE);
-        DrawText("P2", 1453, 588, 80, BLUE);
-
-        if(c != 0)
-        {
-            for(i = 0; i < c; i++)
-            {
-                r = pop(P2);
-                push(temp, r);
-            }
-
-            nT2 = pop(temp);
-            P2->cN--;
-
-            while(peek(temp) != NULL)
-            {
-                r = pop(temp);
-                push(P2, r);
-            }
-        }
-        //printf("\n\n");
-
-        //printf("[P2] juega: %c%d\n", nT2->type, nT2->level);
-        //displayD(P1);
-        //printf("[P1] Introduce nUm de carta: ");
-        //scanf("%d", &c);
-        displayPDeck(D, P1, tC);
-        displaySelect(D, nT2);
-
-        c = selectCard();
-        DrawText("P1", 1455, 588, 80, WHITE);
-        DrawText("P1", 1453, 588, 80, PINK);
-
-        if(c != 0)
-        {
-            for(i = 0; i < c; i++)
-            {
-                r = pop(P1);
-                push(temp, r);
-            }
-
-            nT = pop(temp);
-            displaySelect(D, nT);
-            P1->cN--;
-
-            while(peek(temp) != NULL)
-            {
-                r = pop(temp);
-                push(P1, r);
-            }
-        }
-        //printf("\n\n");
-    }
-
-    //printf("[Deck] Type: %c level: %d\n", tC->type, tC->level);
-    //printf("[P1] Type: %c level: %d\n", nT->type, nT->level);
-    //printf("[P2] Type: %c level: %d\n", nT2->type, nT2->level);
-    if(nT != NULL && nT2 != NULL) {
-        if (nT->type == nT2->type || nT->type == 'D' || nT2->type == 'D') //comparacion de nivel y comodin
-        {
-            if (D->t == 0 && nT2->type == 'N' && nT->type == 'D') {
-                push(V1, nT2);
-                push(P1R2, tC);
-                D->t = 0;
-            } else if (D->t == 1 && nT->type == 'N' && nT2->type == 'D') {
-                push(V2, nT);
-                push(P2R2, tC);
-                D->t = 1;
-            } else if (nT->type == 'N' || nT2->type == 'N') {
-                int b = 0;
-                if (nT->type == nT2->type)
-                    b = 1;
-                else if (D->t == 0 && nT2->type == 'D' && nT->type == 'N')
-                    b = 2;
-                else if (D->t == 1 && nT->type == 'D' && nT2->type == 'N')
-                    b = 3;
-
-                if (nT->level > nT2->level || (nT->level == nT2->level && D->t == 0)) {
-                    if (b == 1) {
-                        push(V1, nT);
-                        push(V1, nT2);
-                        push(P1R2, tC);
-                        D->t = 0;
-                    } else if (b == 2) {
-                        push(V1, nT);
-                        push(P1R2, tC);
-                        D->t = 0;
-                    } else if (b == 3) {
-                        push(V1, nT2);
-                        push(P1R2, tC);
-                        D->t = 0;
-                    }
-                } else if (nT->level < nT2->level || (nT->level == nT2->level && D->t == 1)) {
-                    if (b == 1) {
-                        push(V2, nT);
-                        push(V2, nT2);
-                        push(P2R2, tC);
-                        D->t = 1;
-                    } else if (b == 2) {
-                        push(V2, nT);
-                        push(P2R2, tC);
-                        D->t = 1;
-                    } else if (b == 3) {
-                        push(V2, nT2);
-                        push(P2R2, tC);
-                        D->t = 1;
-                    }
-                }
-            } else if (D->t == 0 && nT->type == 'D' && nT2->type != 'D') {
-                push(P1R2, tC);
-                D->t = 0;
-            } else if (D->t == 1 && nT2->type == 'D' && nT->type != 'D') {
-                push(P2R2, tC);
-                D->t = 1;
-            } else if (nT->level > nT2->level || (nT->level == nT2->level && D->t == 0)) {
-                push(P1R2, tC);
-                D->t = 0;
-            } else if (nT->level < nT2->level || (nT->level == nT2->level && D->t == 1)) {
-                push(P2R2, tC);
-                D->t = 1;
-            }
-        } else if (nT->type != nT2->type) {
-            if (D->t == 0 && nT->type == 'N' && nT->level > nT2->level) //necromancers puntos directos
-            {
-                push(V1, nT);
-                push(P1R2, tC);
-                D->t = 0;
-            } else if (D->t == 1 && nT2->type == 'N' && nT->level < nT2->level) {
-                push(V2, nT);
-                push(P2R2, tC);
-                D->t = 1;
-            } else if (D->t == 0 && nT2->type == 'N' && nT->level > nT2->level) {
-                push(V1, nT2);
-                push(P1R2, tC);
-                D->t = 0;
-            } else if (D->t == 1 && nT->type == 'N' && nT->level < nT2->level) {
-                push(V2, nT);
-                push(P2R2, tC);
-                D->t = 1;
-            } else if (D->t == 0 && nT->type == 'G' && nT2->type == 'K') {
-                push(P2R2, tC);
-                D->t = 1;
-            } else if (D->t == 1 && nT->type == 'K' && nT2->type == 'G') {
-                push(P1R2, tC);
-                D->t = 0;
-            } else if (D->t == 0) {
-                push(P1R2, tC);
-                D->t = 0;
-            } else if (D->t == 1) {
-                push(P2R2, tC);
-                D->t = 1;
-            }
-        }
+        //printf("[Deck] Type: %c level: %d\n\n", tC->type, tC->level);
 
         if (D->t == 0) {
-            tC = pop(D);
-            push(P2R2, tC);
+            if (nT == NULL) {
+                //displayD(P1);
+                //printf("[P1] Introduce nUm de carta: ");
+                //scanf("%d", &c);
+                displayPDeck(D, P1, tC);
+                DrawText("P1", 1455, 560, 80, WHITE);
+                DrawText("P1", 1453, 560, 80, PINK);
+
+                //c = selectCard();
+
+                if (c != 0) {
+                    for (i = 0; i < c; i++) {
+                        r = pop(P1);
+                        if (r != NULL)
+                            push(temp, r);
+                    }
+
+                    nT = pop(temp);
+                    displaySelect(nT, nT2);
+                    P1->cN--;
+
+                    while (peek(temp) != NULL) {
+                        r = pop(temp);
+                        if (r != NULL)
+                            push(P1, r);
+                    }
+                    c = 0;
+                }
+            }
+            //printf("\n\n");
+
+            //printf("[P1] juega: %c%d\n", nT->type, nT->level);
+
+            //displayD(P2);
+            //printf("[P2] Introduce nUm de carta: ");
+            //scanf("%d", &c);
+            if (nT != NULL) {
+                displayPDeck(D, P2, tC);
+                displaySelect(nT, nT2);
+
+                //c = selectCard();
+                DrawText("P2", 1455, 560, 80, WHITE);
+                DrawText("P2", 1453, 560, 80, BLUE);
+
+                if (c != 0) {
+                    for (i = 0; i < c; i++) {
+                        r = pop(P2);
+                        if (r != NULL)
+                            push(temp, r);
+                    }
+
+                    nT2 = pop(temp);
+                    displaySelect(nT, nT2);
+                    P2->cN--;
+
+                    while (peek(temp) != NULL) {
+                        r = pop(temp);
+                        if (r != NULL)
+                            push(P2, r);
+                    }
+                    c = 0;
+                }
+            }
+            //printf("\n\n");
         } else if (D->t == 1) {
-            tC = pop(D);
-            push(P1R2, tC);
+            //displayD(P2);
+            //printf("[P2] Introduce nUm de carta: ");
+            //scanf("%d", &c);
+            if (nT2 == NULL) {
+                displayPDeck(D, P2, tC);
+
+                //c = selectCard();
+                DrawText("P2", 1455, 588, 80, WHITE);
+                DrawText("P2", 1453, 588, 80, BLUE);
+
+                if (c != 0) {
+                    for (i = 0; i < c; i++) {
+                        r = pop(P2);
+                        push(temp, r);
+                    }
+
+                    nT2 = pop(temp);
+                    P2->cN--;
+
+                    while (peek(temp) != NULL) {
+                        r = pop(temp);
+                        push(P2, r);
+                    }
+                    c = 0;
+                }
+            }
+            //printf("\n\n");
+
+            //printf("[P2] juega: %c%d\n", nT2->type, nT2->level);
+            //displayD(P1);
+            //printf("[P1] Introduce nUm de carta: ");
+            //scanf("%d", &c);
+            if (nT2 != NULL) {
+                displayPDeck(D, P1, tC);
+                displaySelect(nT, nT2);
+
+                //c = selectCard();
+                DrawText("P1", 1455, 588, 80, WHITE);
+                DrawText("P1", 1453, 588, 80, PINK);
+
+                if (c != 0) {
+                    for (i = 0; i < c; i++) {
+                        r = pop(P1);
+                        push(temp, r);
+                    }
+
+                    nT = pop(temp);
+                    displaySelect(nT, nT2);
+                    P1->cN--;
+
+                    while (peek(temp) != NULL) {
+                        r = pop(temp);
+                        push(P1, r);
+                    }
+                    c = 0;
+                }
+            }
+            //printf("\n\n");
         }
+
+        //printf("[Deck] Type: %c level: %d\n", tC->type, tC->level);
+        //printf("[P1] Type: %c level: %d\n", nT->type, nT->level);
+        //printf("[P2] Type: %c level: %d\n", nT2->type, nT2->level);
+
+        if (nT != NULL && nT2 != NULL) {
+            if (nT->type == nT2->type || nT->type == 'D' || nT2->type == 'D') //comparacion de nivel y comodin
+            {
+                if (D->t == 0 && nT2->type == 'N' && nT->type == 'D') {
+                    push(V1, nT2);
+                    push(P1R2, tC);
+                    D->t = 0;
+                } else if (D->t == 1 && nT->type == 'N' && nT2->type == 'D') {
+                    push(V2, nT);
+                    push(P2R2, tC);
+                    D->t = 1;
+                } else if (nT->type == 'N' || nT2->type == 'N') {
+                    int b = 0;
+                    if (nT->type == nT2->type)
+                        b = 1;
+                    else if (D->t == 0 && nT2->type == 'D' && nT->type == 'N')
+                        b = 2;
+                    else if (D->t == 1 && nT->type == 'D' && nT2->type == 'N')
+                        b = 3;
+
+                    if (nT->level > nT2->level || (nT->level == nT2->level && D->t == 0)) {
+                        if (b == 1) {
+                            push(V1, nT);
+                            push(V1, nT2);
+                            push(P1R2, tC);
+                            D->t = 0;
+                        } else if (b == 2) {
+                            push(V1, nT);
+                            push(P1R2, tC);
+                            D->t = 0;
+                        } else if (b == 3) {
+                            push(V1, nT2);
+                            push(P1R2, tC);
+                            D->t = 0;
+                        }
+                    } else if (nT->level < nT2->level || (nT->level == nT2->level && D->t == 1)) {
+                        if (b == 1) {
+                            push(V2, nT);
+                            push(V2, nT2);
+                            push(P2R2, tC);
+                            D->t = 1;
+                        } else if (b == 2) {
+                            push(V2, nT);
+                            push(P2R2, tC);
+                            D->t = 1;
+                        } else if (b == 3) {
+                            push(V2, nT2);
+                            push(P2R2, tC);
+                            D->t = 1;
+                        }
+                    }
+                } else if (D->t == 0 && nT->type == 'D' && nT2->type != 'D') {
+                    push(P1R2, tC);
+                    D->t = 0;
+                } else if (D->t == 1 && nT2->type == 'D' && nT->type != 'D') {
+                    push(P2R2, tC);
+                    D->t = 1;
+                } else if (nT->level > nT2->level || (nT->level == nT2->level && D->t == 0)) {
+                    push(P1R2, tC);
+                    D->t = 0;
+                } else if (nT->level < nT2->level || (nT->level == nT2->level && D->t == 1)) {
+                    push(P2R2, tC);
+                    D->t = 1;
+                }
+            } else if (nT->type != nT2->type) {
+                if (D->t == 0 && nT->type == 'N' && nT->level > nT2->level) //necromancers puntos directos
+                {
+                    push(V1, nT);
+                    push(P1R2, tC);
+                    D->t = 0;
+                } else if (D->t == 1 && nT2->type == 'N' && nT->level < nT2->level) {
+                    push(V2, nT);
+                    push(P2R2, tC);
+                    D->t = 1;
+                } else if (D->t == 0 && nT2->type == 'N' && nT->level > nT2->level) {
+                    push(V1, nT2);
+                    push(P1R2, tC);
+                    D->t = 0;
+                } else if (D->t == 1 && nT->type == 'N' && nT->level < nT2->level) {
+                    push(V2, nT);
+                    push(P2R2, tC);
+                    D->t = 1;
+                } else if (D->t == 0 && nT->type == 'G' && nT2->type == 'K') {
+                    push(P2R2, tC);
+                    D->t = 1;
+                } else if (D->t == 1 && nT->type == 'K' && nT2->type == 'G') {
+                    push(P1R2, tC);
+                    D->t = 0;
+                } else if (D->t == 0) {
+                    push(P1R2, tC);
+                    D->t = 0;
+                } else if (D->t == 1) {
+                    push(P2R2, tC);
+                    D->t = 1;
+                }
+
+                if (D->t == 0) {
+                    tC = pop(D);
+                    push(P2R2, tC);
+                } else if (D->t == 1) {
+                    tC = pop(D);
+                    push(P1R2, tC);
+                }
+            }
+            pop(D);
+            tC = NULL;
+            nT = NULL;
+            nT2 = NULL;
+        }
+        EndDrawing();
     }
 
     //displayD(P1R2);
