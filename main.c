@@ -57,17 +57,11 @@ int main(void)
         {
             //displayPDeck(D, P1, peek(D));
 
-<<<<<<< HEAD
             if (peek(D) != NULL)
             {
                 itsGoTimeBBY(D, V1, V2, P1, P2, P1R2, P2R2, tC, nT, nT2);
             }
-=======
 
-            itsGoTimeBBY(D, V1, V2, P1, P2, P1R2, P2R2);
-
-
->>>>>>> eb03667689647f0abfd50b31fe97a97de03a3cd3
             /*
             while (peek(P1R2) != NULL && peek(P2R2) != NULL)
             {
