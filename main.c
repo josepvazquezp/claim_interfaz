@@ -19,9 +19,6 @@ int main(void)
     Stack *P2R2;
     Stack *P1;
     Stack *P2;
-    Node *tC;
-    Node *nT;
-    Node *nT2;
 
     InitWindow(screenWidth, screenHeight, "CLAIM");
 
@@ -43,9 +40,6 @@ int main(void)
             P2R2 = newStack();
             P1 = newPlayer(D);
             P2 = newPlayer(D);
-            tC = NULL;
-            nT = NULL;
-            nT2 = NULL;
 
             shuffleR = 0;
         }
@@ -57,10 +51,12 @@ int main(void)
         {
             //displayPDeck(D, P1, peek(D));
 
-            if (peek(D) != NULL)
+            if(peek(D) != NULL)
             {
-                itsGoTimeBBY(D, V1, V2, P1, P2, P1R2, P2R2, tC, nT, nT2);
+                itsGoTimeBBY(D, V1, V2, P1, P2, P1R2, P2R2);
             }
+            else
+                ClearBackground(BLACK);
 
             /*
             while (peek(P1R2) != NULL && peek(P2R2) != NULL)

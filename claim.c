@@ -304,10 +304,15 @@ int selectCard()
         return 0;
 }
 
-void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P1R2, Stack *P2R2, Node *tC, Node *nT, Node *nT2)
+void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P1R2, Stack *P2R2)
 {
     Stack *temp = newStack();
-    while(peek(D) != NULL && !WindowShouldClose()) {
+    Node *tC;
+    Node *nT = NULL;
+    Node *nT2 = NULL;
+
+    while(peek(D) != NULL && !WindowShouldClose())
+    {
         BeginDrawing();
         tC = peek(D);
         Node *r = NULL;
@@ -318,8 +323,10 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
 
         //printf("[Deck] Type: %c level: %d\n\n", tC->type, tC->level);
 
-        if (D->t == 0) {
-            if (nT == NULL) {
+        if(D->t == 0)
+        {
+            if(nT == NULL)
+            {
                 //displayD(P1);
                 //printf("[P1] Introduce nUm de carta: ");
                 //scanf("%d", &c);
@@ -329,21 +336,22 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
 
                 //c = selectCard();
 
-                if (c != 0) {
-                    for (i = 0; i < c; i++) {
+                if(c != 0)
+                {
+                    for(i = 0; i < c; i++)
+                    {
                         r = pop(P1);
-                        if (r != NULL)
-                            push(temp, r);
+                        push(temp, r);
                     }
 
                     nT = pop(temp);
                     displaySelect(nT, nT2);
                     P1->cN--;
 
-                    while (peek(temp) != NULL) {
+                    while(peek(temp) != NULL)
+                    {
                         r = pop(temp);
-                        if (r != NULL)
-                            push(P1, r);
+                        push(P1, r);
                     }
                     c = 0;
                 }
@@ -355,7 +363,8 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
             //displayD(P2);
             //printf("[P2] Introduce nUm de carta: ");
             //scanf("%d", &c);
-            if (nT != NULL) {
+            if(nT != NULL)
+            {
                 displayPDeck(D, P2, tC);
                 displaySelect(nT, nT2);
 
@@ -363,39 +372,45 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
                 DrawText("P2", 1455, 560, 80, WHITE);
                 DrawText("P2", 1453, 560, 80, BLUE);
 
-                if (c != 0) {
-                    for (i = 0; i < c; i++) {
+                if(c != 0)
+                {
+                    for(i = 0; i < c; i++)
+                    {
                         r = pop(P2);
-                        if (r != NULL)
-                            push(temp, r);
+                        push(temp, r);
                     }
 
                     nT2 = pop(temp);
                     displaySelect(nT, nT2);
                     P2->cN--;
 
-                    while (peek(temp) != NULL) {
+                    while(peek(temp) != NULL)
+                    {
                         r = pop(temp);
-                        if (r != NULL)
-                            push(P2, r);
+                        push(P2, r);
                     }
                     c = 0;
                 }
             }
             //printf("\n\n");
-        } else if (D->t == 1) {
+        }
+        else if(D->t == 1)
+        {
             //displayD(P2);
             //printf("[P2] Introduce nUm de carta: ");
             //scanf("%d", &c);
-            if (nT2 == NULL) {
+            if(nT2 == NULL)
+            {
                 displayPDeck(D, P2, tC);
 
                 //c = selectCard();
                 DrawText("P2", 1455, 588, 80, WHITE);
                 DrawText("P2", 1453, 588, 80, BLUE);
 
-                if (c != 0) {
-                    for (i = 0; i < c; i++) {
+                if(c != 0)
+                {
+                    for(i = 0; i < c; i++)
+                    {
                         r = pop(P2);
                         push(temp, r);
                     }
@@ -403,7 +418,8 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
                     nT2 = pop(temp);
                     P2->cN--;
 
-                    while (peek(temp) != NULL) {
+                    while(peek(temp) != NULL)
+                    {
                         r = pop(temp);
                         push(P2, r);
                     }
@@ -416,7 +432,8 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
             //displayD(P1);
             //printf("[P1] Introduce nUm de carta: ");
             //scanf("%d", &c);
-            if (nT2 != NULL) {
+            if(nT2 != NULL)
+            {
                 displayPDeck(D, P1, tC);
                 displaySelect(nT, nT2);
 
@@ -424,8 +441,10 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
                 DrawText("P1", 1455, 588, 80, WHITE);
                 DrawText("P1", 1453, 588, 80, PINK);
 
-                if (c != 0) {
-                    for (i = 0; i < c; i++) {
+                if(c != 0)
+                {
+                    for(i = 0; i < c; i++)
+                    {
                         r = pop(P1);
                         push(temp, r);
                     }
@@ -434,7 +453,8 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
                     displaySelect(nT, nT2);
                     P1->cN--;
 
-                    while (peek(temp) != NULL) {
+                    while(peek(temp) != NULL)
+                    {
                         r = pop(temp);
                         push(P1, r);
                     }
@@ -448,110 +468,159 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
         //printf("[P1] Type: %c level: %d\n", nT->type, nT->level);
         //printf("[P2] Type: %c level: %d\n", nT2->type, nT2->level);
 
-        if (nT != NULL && nT2 != NULL) {
-            if (nT->type == nT2->type || nT->type == 'D' || nT2->type == 'D') //comparacion de nivel y comodin
+        if(nT != NULL && nT2 != NULL)
+        {
+            tC = pop(D);
+            if(nT->type == nT2->type || nT->type == 'D' || nT2->type == 'D') //comparacion de nivel y comodin
             {
-                if (D->t == 0 && nT2->type == 'N' && nT->type == 'D') {
+                if(D->t == 0 && nT2->type == 'N' && nT->type == 'D')
+                {
                     push(V1, nT2);
                     push(P1R2, tC);
                     D->t = 0;
-                } else if (D->t == 1 && nT->type == 'N' && nT2->type == 'D') {
+                }
+                else if(D->t == 1 && nT->type == 'N' && nT2->type == 'D')
+                {
                     push(V2, nT);
                     push(P2R2, tC);
                     D->t = 1;
-                } else if (nT->type == 'N' || nT2->type == 'N') {
+                }
+                else if(nT->type == 'N' || nT2->type == 'N')
+                {
                     int b = 0;
-                    if (nT->type == nT2->type)
+                    if(nT->type == nT2->type)
                         b = 1;
-                    else if (D->t == 0 && nT2->type == 'D' && nT->type == 'N')
+                    else if(D->t == 0 && nT2->type == 'D' && nT->type == 'N')
                         b = 2;
-                    else if (D->t == 1 && nT->type == 'D' && nT2->type == 'N')
+                    else if(D->t == 1 && nT->type == 'D' && nT2->type == 'N')
                         b = 3;
 
-                    if (nT->level > nT2->level || (nT->level == nT2->level && D->t == 0)) {
-                        if (b == 1) {
+                    if(nT->level > nT2->level || (nT->level == nT2->level && D->t == 0))
+                    {
+                        if(b == 1)
+                        {
                             push(V1, nT);
-                            push(V1, nT2);
-                            push(P1R2, tC);
-                            D->t = 0;
-                        } else if (b == 2) {
-                            push(V1, nT);
-                            push(P1R2, tC);
-                            D->t = 0;
-                        } else if (b == 3) {
                             push(V1, nT2);
                             push(P1R2, tC);
                             D->t = 0;
                         }
-                    } else if (nT->level < nT2->level || (nT->level == nT2->level && D->t == 1)) {
-                        if (b == 1) {
+                        else if(b == 2)
+                        {
+                            push(V1, nT);
+                            push(P1R2, tC);
+                            D->t = 0;
+                        }
+                        else if(b == 3)
+                        {
+                            push(V1, nT2);
+                            push(P1R2, tC);
+                            D->t = 0;
+                        }
+                    }
+                    else if(nT->level < nT2->level || (nT->level == nT2->level && D->t == 1))
+                    {
+                        if(b == 1)
+                        {
                             push(V2, nT);
                             push(V2, nT2);
                             push(P2R2, tC);
                             D->t = 1;
-                        } else if (b == 2) {
+                        }
+                        else if(b == 2)
+                        {
                             push(V2, nT);
                             push(P2R2, tC);
                             D->t = 1;
-                        } else if (b == 3) {
+                        }
+                        else if(b == 3)
+                        {
                             push(V2, nT2);
                             push(P2R2, tC);
                             D->t = 1;
                         }
                     }
-                } else if (D->t == 0 && nT->type == 'D' && nT2->type != 'D') {
+                }
+                else if(D->t == 0 && nT->type == 'D' && nT2->type != 'D')
+                {
                     push(P1R2, tC);
                     D->t = 0;
-                } else if (D->t == 1 && nT2->type == 'D' && nT->type != 'D') {
-                    push(P2R2, tC);
-                    D->t = 1;
-                } else if (nT->level > nT2->level || (nT->level == nT2->level && D->t == 0)) {
-                    push(P1R2, tC);
-                    D->t = 0;
-                } else if (nT->level < nT2->level || (nT->level == nT2->level && D->t == 1)) {
+                }
+                else if(D->t == 1 && nT2->type == 'D' && nT->type != 'D')
+                {
                     push(P2R2, tC);
                     D->t = 1;
                 }
-            } else if (nT->type != nT2->type) {
-                if (D->t == 0 && nT->type == 'N' && nT->level > nT2->level) //necromancers puntos directos
+                else if(nT->level > nT2->level || (nT->level == nT2->level && D->t == 0))
+                {
+                    push(P1R2, tC);
+                    D->t = 0;
+                }
+                else if(nT->level < nT2->level || (nT->level == nT2->level && D->t == 1))
+                {
+                    push(P2R2, tC);
+                    D->t = 1;
+                }
+            }
+            else if(nT->type != nT2->type)
+            {
+                if(D->t == 0 && nT->type == 'N' && nT->level > nT2->level) //necromancers puntos directos
                 {
                     push(V1, nT);
                     push(P1R2, tC);
                     D->t = 0;
-                } else if (D->t == 1 && nT2->type == 'N' && nT->level < nT2->level) {
+                }
+                else if
+                (D->t == 1 && nT2->type == 'N' && nT->level < nT2->level)
+                {
                     push(V2, nT);
                     push(P2R2, tC);
                     D->t = 1;
-                } else if (D->t == 0 && nT2->type == 'N' && nT->level > nT2->level) {
+                }
+                else if(D->t == 0 && nT2->type == 'N' && nT->level > nT2->level)
+                {
                     push(V1, nT2);
                     push(P1R2, tC);
                     D->t = 0;
-                } else if (D->t == 1 && nT->type == 'N' && nT->level < nT2->level) {
+                }
+                else if(D->t == 1 && nT->type == 'N' && nT->level < nT2->level)
+                {
                     push(V2, nT);
                     push(P2R2, tC);
                     D->t = 1;
-                } else if (D->t == 0 && nT->type == 'G' && nT2->type == 'K') {
-                    push(P2R2, tC);
-                    D->t = 1;
-                } else if (D->t == 1 && nT->type == 'K' && nT2->type == 'G') {
-                    push(P1R2, tC);
-                    D->t = 0;
-                } else if (D->t == 0) {
-                    push(P1R2, tC);
-                    D->t = 0;
-                } else if (D->t == 1) {
+                }
+                else if(D->t == 0 && nT->type == 'G' && nT2->type == 'K')
+                {
                     push(P2R2, tC);
                     D->t = 1;
                 }
-                if (D->t == 0) {
-                    tC = pop(D);
-                    push(P2R2, tC);
-                } else if (D->t == 1) {
-                    tC = pop(D);
+                else if(D->t == 1 && nT->type == 'K' && nT2->type == 'G')
+                {
                     push(P1R2, tC);
+                    D->t = 0;
+                }
+                else if(D->t == 0)
+                {
+                    push(P1R2, tC);
+                    D->t = 0;
+                }
+                else if(D->t == 1)
+                {
+                    push(P2R2, tC);
+                    D->t = 1;
                 }
             }
-            pop(D);
+
+            if(D->t == 0)
+            {
+                tC = pop(D);
+                push(P2R2, tC);
+            }
+            else if(D->t == 1)
+            {
+                tC = pop(D);
+                push(P1R2, tC);
+            }
+
             tC = NULL;
             nT = NULL;
             nT2 = NULL;
