@@ -35,6 +35,9 @@ void drawTable(Stack *P);
 void displayDeckCard(Node *tC);
 void displayPDeck(Stack *D, Stack *P, Node *tC);
 void displaySelect(Node *nT, Node *nT2);
+void displayPlayerDeckR2(Stack *P);
+void drawRound2();
+void Winner();
 
 int selectCard();
 
