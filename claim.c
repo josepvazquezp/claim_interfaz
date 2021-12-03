@@ -6,8 +6,6 @@
 #include "stack.h"
 #include "raylib.h"
 
-
-
 void drawStart()
 {
     Color backGround = {23, 32, 42, 255};
@@ -91,6 +89,7 @@ void drawTable(Stack *P)
 
 void displayDeckCard(Node *tC)
 {
+    DrawRectangle(1390, 382, 202, 135, WHITE);
     Image deck = LoadImage(tC->card);
     ImageRotateCW(&deck);
     Texture2D textureDeck = LoadTextureFromImage(deck);
@@ -98,52 +97,7 @@ void displayDeckCard(Node *tC)
     DrawTexture(textureDeck, 1392, 384, WHITE);
 }
 
-void displayPDeck(Stack *D, Stack *P, Node *tC)
-{
-    drawTable(P);
-    displayDeckCard(tC);
-
-    Node *focusNodeP = P->head;
-
-    int i = 0;
-    int ac = 15;
-    Texture2D tTemp;
-
-    Image backC = LoadImage("cards/fback.png");
-    Image tI;
-    Texture2D  tBack = LoadTextureFromImage(backC);
-    UnloadImage(backC);
-
-    while(focusNodeP != NULL)
-    {
-        tI = LoadImage(focusNodeP->card);
-        tTemp = LoadTextureFromImage(tI);
-        UnloadImage(tI);
-
-        if(i < 10)
-        {
-            DrawTexture(tTemp, ac, 690, WHITE);
-            DrawTexture(tBack, ac, 10, WHITE);
-        }
-        else
-        {
-            if(i == 10)
-                ac = 15;
-
-            DrawTexture(tTemp, ac, 480, WHITE);
-            DrawTexture(tBack, ac, 220, WHITE);
-        }
-
-        ac += 160;
-
-        focusNodeP = focusNodeP->next;
-
-        i++;
-
-    }
-}
-
-void displayPlayerDeckR2(Stack *P)
+void displayPDeck(Stack *D, Stack *P)
 {
     drawTable(P);
 
@@ -333,34 +287,50 @@ Stack *newPlayer(Stack *D)
     return p;
 }
 
-int selectCard()
+int selectCard(Node *nT, Node *nT2, Stack *P1, Stack *P2)
 {
-    if (IsKeyPressed(KEY_Q))
+    int i = 1;
+    Node *focusNode = NULL;
+
+    if(nT != NULL)
+        focusNode = P1->head;
+    else if(nT2 != NULL)
+        focusNode = P2->head;
+
+    while(focusNode != NULL)
+    {
+        i++;
+        focusNode = focusNode->next;
+    }
+
+    if(i >= 1 && IsKeyPressed(KEY_Q))
         return 1;
-    else if (IsKeyPressed(KEY_W))
+    else if(i >= 2 && IsKeyPressed(KEY_W))
         return 2;
-    else if (IsKeyPressed(KEY_E))
+    else if(i >= 3 && IsKeyPressed(KEY_E))
         return 3;
-    else if (IsKeyPressed(KEY_R))
+    else if(i >= 4 && IsKeyPressed(KEY_R))
         return 4;
-    else if (IsKeyPressed(KEY_T))
+    else if(i >= 5 && IsKeyPressed(KEY_T))
         return 5;
-    else if (IsKeyPressed(KEY_Y))
+    else if(i >= 6 && IsKeyPressed(KEY_Y))
         return 6;
-    else if (IsKeyPressed(KEY_U))
+    else if(i >= 7 && IsKeyPressed(KEY_U))
         return 7;
-    else if (IsKeyPressed(KEY_I))
+    else if(i >= 8 && IsKeyPressed(KEY_I))
         return 8;
-    else if (IsKeyPressed(KEY_O))
+    else if(i >= 9 && IsKeyPressed(KEY_O))
         return 9;
-    else if (IsKeyPressed(KEY_P))
+    else if(i >= 10 && IsKeyPressed(KEY_P))
         return 10;
-    else if (IsKeyPressed(KEY_A))
+    else if(i >= 11 && IsKeyPressed(KEY_A))
         return 11;
-    else if (IsKeyPressed(KEY_S))
+    else if(i >= 12 && IsKeyPressed(KEY_S))
         return 12;
-    else if (IsKeyPressed(KEY_D))
+    else if(i == 13 && IsKeyPressed(KEY_D))
         return 13;
+    else if(WindowShouldClose() || IsKeyPressed(KEY_ESCAPE))
+        return 14;
     else
         return 0;
 }
@@ -380,7 +350,7 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
         int c = 0;
         int i = 0;
 
-        c = selectCard();
+        c = selectCard(nT, nT2, P1, P2);
 
         //printf("[Deck] Type: %c level: %d\n\n", tC->type, tC->level);
 
@@ -391,7 +361,8 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
                 //displayD(P1);
                 //printf("[P1] Introduce nUm de carta: ");
                 //scanf("%d", &c);
-                displayPDeck(D, P1, tC);
+                displayPDeck(D, P1);
+                displayDeckCard(tC);
                 DrawText("P1", 1455, 560, 80, WHITE);
                 DrawText("P1", 1453, 560, 80, PINK);
 
@@ -426,7 +397,8 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
             //scanf("%d", &c);
             if(nT != NULL)
             {
-                displayPDeck(D, P2, tC);
+                displayPDeck(D, P2);
+                displayDeckCard(tC);
                 displaySelect(nT, nT2);
 
                 //c = selectCard();
@@ -462,7 +434,8 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
             //scanf("%d", &c);
             if(nT2 == NULL)
             {
-                displayPDeck(D, P2, tC);
+                displayPDeck(D, P2);
+                displayDeckCard(tC);
 
                 //c = selectCard();
                 DrawText("P2", 1455, 588, 80, WHITE);
@@ -495,7 +468,8 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
             //scanf("%d", &c);
             if(nT2 != NULL)
             {
-                displayPDeck(D, P1, tC);
+                displayPDeck(D, P1);
+                displayDeckCard(tC);
                 displaySelect(nT, nT2);
 
                 //c = selectCard();
@@ -694,6 +668,7 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
         //displayD(P2R2);
         //displayD(V2);
     }
+
 }
 
 void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2)
@@ -703,28 +678,27 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2)
     Node *nT = NULL;
     Node *nT2 = NULL;
 
-
-
-    while (peek(P1R2) != NULL && peek(P2R2) != NULL) {
-
+    while(peek(P1R2) != NULL && peek(P2R2) != NULL)
+    {
         BeginDrawing();
 
         Node *r = NULL;
         int c;
         int i = 0;
 
-        c=selectCard();
+        c=selectCard(nT, nT2, P1R2, P1R2);
 
-
-
-        if (D->t == 0) {
-
-            if (nT == NULL)
+        if(D->t == 0)
+        {
+            if(nT == NULL)
             {
-                displayPlayerDeckR2(P1R2);
+                displayPDeck(D, P1R2);
+
                 DrawText("P1", 1455, 560, 80, WHITE);
                 DrawText("P1", 1453, 560, 80, PINK);
-                for (i = 0; i < c; i++) {
+
+                for(i = 0; i < c; i++)
+                {
                     r = pop(P1R2);
                     push(temp, r);
                 }
@@ -733,7 +707,8 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2)
                 displaySelect(nT,nT2);
                 P1R2->cN--;
 
-                while (peek(temp) != NULL) {
+                while(peek(temp) != NULL)
+                {
                     r = pop(temp);
                     push(P1R2, r);
                 }
@@ -744,15 +719,18 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2)
             //displayD(P2R2);
             //printf("[P2] Introduce nUm de carta: ");
             //scanf("%d", &c);
-            if (nT != NULL) {
-                displayPlayerDeckR2(P2R2);
+            if(nT != NULL)
+            {
+                displayPDeck(D, P2R2);
                 displaySelect(nT, nT2);
 
                 DrawText("P2", 1455, 560, 80, WHITE);
                 DrawText("P2", 1453, 560, 80, BLUE);
-                if (c != 0)
+
+                if(c != 0)
                 {
-                    for (i = 0; i < c; i++) {
+                    for(i = 0; i < c; i++)
+                    {
                         r = pop(P2R2);
                         push(temp, r);
                     }
@@ -761,7 +739,8 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2)
                     displaySelect(nT,nT2);
                     P2R2->cN--;
 
-                    while (peek(temp) != NULL) {
+                    while(peek(temp) != NULL)
+                    {
                         r = pop(temp);
                         push(P2R2, r);
                     }
@@ -770,19 +749,22 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2)
                 }
             }
         }
-        else if (D->t == 1) {
+        else if(D->t == 1)
+        {
             //displayD(P2R2);
             //printf("[P2] Introduce nUm de carta: ");
             //scanf("%d", &c);
-            if (nT2 == NULL)
+            if(nT2 == NULL)
             {
-                displayPlayerDeckR2(P2R2);
+                displayPDeck(D, P2R2);
 
                 DrawText("P2", 1455, 588, 80, WHITE);
                 DrawText("P2", 1453, 588, 80, BLUE);
 
-                if (c != 0) {
-                    for (i = 0; i < c; i++) {
+                if(c != 0)
+                {
+                    for(i = 0; i < c; i++)
+                    {
                         r = pop(P2R2);
                         push(temp, r);
                     }
@@ -791,7 +773,8 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2)
                     displaySelect(nT, nT2);
                     P2R2->cN--;
 
-                    while (peek(temp) != NULL) {
+                    while(peek(temp) != NULL)
+                    {
                         r = pop(temp);
                         push(P2R2, r);
                     }
@@ -804,17 +787,17 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2)
             //printf("[P1] Introduce nUm de carta: ");
             //scanf("%d", &c);
 
-            if (nT2 != NULL)
+            if(nT2 != NULL)
             {
-                displayPlayerDeckR2(P1R2);
+                displayPDeck(D, P1R2);
                 displaySelect(nT,nT2);
 
                 DrawText("P1", 1455, 560, 80, WHITE);
                 DrawText("P1", 1453, 560, 80, PINK);
 
-                if (c != 0)
+                if(c != 0)
                 {
-                    for (i = 0; i < c; i++)
+                    for(i = 0; i < c; i++)
                     {
                         r = pop(P1R2);
                         push(temp, r);
@@ -824,7 +807,7 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2)
                     displaySelect(nT,nT2);
                     P1R2->cN--;
 
-                    while (peek(temp) != NULL)
+                    while(peek(temp) != NULL)
                     {
                         r = pop(temp);
                         push(P1R2, r);
@@ -841,49 +824,65 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2)
         if(nT != NULL && nT2 != NULL)
         {
             //CONDICIONES GOBLIN Y KNIGHT
-            if (D->t == 1 && nT->type == 'K' && nT2->type == 'G') {
+            if(D->t == 1 && nT->type == 'K' && nT2->type == 'G')
+            {
                 push(V1, nT);
                 push(V1, nT2);
                 D->t = 0;
-            } else if (D->t == 0 && nT2->type == 'K' && nT->type == 'G') {
+            }
+            else if(D->t == 0 && nT2->type == 'K' && nT->type == 'G')
+            {
                 push(V2, nT);
                 push(V2, nT2);
                 D->t = 1;
             }
                 //COMPARACIONES DE MISMA CLASE
-            else if (nT->type == nT2->type) {
-                if (nT->type == 'E' && nT->type == 'E') //caso 2 enanos
+            else if(nT->type == nT2->type)
+            {
+                if(nT->type == 'E' && nT->type == 'E') //caso 2 enanos
                 {
-                    if (nT->level < nT2->level) {
+                    if(nT->level < nT2->level)
+                    {
                         push(V1, nT);
                         push(V1, nT2);
                         D->t = 1;
-                    } else if (nT2->level < nT->level) {
+                    }
+                    else if(nT2->level < nT->level)
+                    {
                         push(V2, nT);
                         push(V2, nT2);
                         D->t = 0;
                     }
-                } else if (nT->level > nT2->level) {
+                }
+                else if(nT->level > nT2->level)
+                {
                     push(V1, nT);
                     push(V1, nT2);
                     D->t = 0;
-                } else if (nT->level < nT2->level) {
+                }
+                else if(nT->level < nT2->level)
+                {
                     push(V2, nT);
                     push(V2, nT2);
                     D->t = 1;
                 }
             }
                 //COMPARACIONES DE DIFERENTE CLASE SIN DUPPLEGANGER
-            else if (nT->type != nT2->type && nT->type != 'D' && nT2->type != 'D') {
-                if (nT->type == 'E' || nT2->type == 'E') //enano perdedor
+            else if(nT->type != nT2->type && nT->type != 'D' && nT2->type != 'D')
+            {
+                if(nT->type == 'E' || nT2->type == 'E') //enano perdedor
                 {
                     push(V1, nT);
                     push(V2, nT2);
-                } else if (D->t == 0) {
+                }
+                else if(D->t == 0)
+                {
                     push(V1, nT);
                     push(V1, nT2);
                     //D->t = 0; al estar implicito
-                } else if (D->t == 1) {
+                }
+                else if(D->t == 1)
+                {
                     push(V2, nT);
                     push(V2, nT2);
                     //D->t = 1; al estar implicito
@@ -891,67 +890,95 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2)
             }
                 //COMPARACIONES DE DIFERENTE CLASE CON DUPPLEGANGER
                 //////
-            else if (D->t == 0 && nT->type == 'D') {
-                if (nT2->type != 'D') {
-                    if (nT2->type == 'E') //enano perdedor
+            else if(D->t == 0 && nT->type == 'D')
+            {
+                if(nT2->type != 'D')
+                {
+                    if(nT2->type == 'E') //enano perdedor
                     {
                         push(V1, nT);
                         push(V2, nT2);
-                    } else {
+                    }
+                    else
+                    {
                         push(V1, nT);
                         push(V1, nT2);
                         D->t = 0;
                     }
-                } else if (nT2->type == 'D') {
-                    if (nT->level > nT2->level) {
+                }
+                else if(nT2->type == 'D')
+                {
+                    if(nT->level > nT2->level)
+                    {
                         push(V1, nT);
                         push(V1, nT2);
                         D->t = 0;
-                    } else if (nT->level < nT2->level) {
+                    }
+                    else if(nT->level < nT2->level)
+                    {
                         push(V2, nT);
                         push(V2, nT2);
                         D->t = 1;
                     }
                 }
-            } else if (D->t == 1 && nT2->type == 'D') {
-                if (nT->type != 'D') {
+            }
+            else if(D->t == 1 && nT2->type == 'D')
+            {
+                if(nT->type != 'D')
+                {
                     if (nT2->type == 'E') //enano perdedor
                     {
                         push(V1, nT);
                         push(V2, nT2);
-                    } else {
-                        push(V2, nT);
-                        push(V2, nT2);
-                        D->t = 1;
                     }
-                } else if (nT->type == 'D') {
-                    if (nT->level > nT2->level) {
-                        push(V1, nT);
-                        push(V1, nT2);
-                        D->t = 0;
-                    } else if (nT->level < nT2->level) {
+                    else
+                    {
                         push(V2, nT);
                         push(V2, nT2);
                         D->t = 1;
                     }
                 }
-            } else if (nT->type == 'D' || nT2->type == 'D') {
-                if (nT->level > nT2->level) {
-                    if (nT2->type == 'E') //enano perdedor
+                else if(nT->type == 'D')
+                {
+                    if(nT->level > nT2->level)
                     {
-                        push(V1, nT);
-                        push(V2, nT2);
-                    } else {
                         push(V1, nT);
                         push(V1, nT2);
                         D->t = 0;
                     }
-                } else if (nT->level < nT2->level) {
-                    if (nT->type == 'E') //enano perdedor
+                    else if(nT->level < nT2->level)
+                    {
+                        push(V2, nT);
+                        push(V2, nT2);
+                        D->t = 1;
+                    }
+                }
+            }
+            else if(nT->type == 'D' || nT2->type == 'D')
+            {
+                if(nT->level > nT2->level)
+                {
+                    if(nT2->type == 'E') //enano perdedor
                     {
                         push(V1, nT);
                         push(V2, nT2);
-                    } else {
+                    }
+                    else
+                    {
+                        push(V1, nT);
+                        push(V1, nT2);
+                        D->t = 0;
+                    }
+                }
+                else if(nT->level < nT2->level)
+                {
+                    if(nT->type == 'E') //enano perdedor
+                    {
+                        push(V1, nT);
+                        push(V2, nT2);
+                    }
+                    else
+                    {
                         push(V2, nT);
                         push(V2, nT2);
                         D->t = 1;
@@ -979,7 +1006,8 @@ void displayD(Stack * D)
 }
 */
 
-void claimWinner(Stack *V1, Stack *V2) {
+void claimWinner(Stack *V1, Stack *V2)
+{
     int P1TG = 0;
     int P1TE = 0;
     int P1TN = 0;

@@ -69,7 +69,7 @@ int main(void)
                 r2++;
             }
 
-            if (peek(P1R2) != NULL && peek(P2R2) != NULL && r2 >= 50 )
+            if(peek(P1R2) != NULL && peek(P2R2) != NULL && r2 >= 50 )
             {
                 round2(D, V1, V2, P1R2, P2R2);
                 nextround = 0;
