@@ -7,7 +7,6 @@ struct node
 {
     int level;
     char type;
-    //char card[12];
     Image imageCard;
     Texture2D textureCard;
     struct node *next;

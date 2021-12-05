@@ -208,13 +208,15 @@ void unloadsImages(Stack *D, Stack *P1, Stack *P2)
         focusNodeDeck = focusNodeDeck->next;
     }
 
-    while(focusNodeP1 != NULL && focusNodeP2 != NULL)
+    while(focusNodeP1 != NULL)
     {
-
         UnloadImage(focusNodeP1->imageCard);
-        UnloadImage(focusNodeP2->imageCard);
-
         focusNodeP1 = focusNodeP1->next;
+    }
+
+    while(focusNodeP2 != NULL)
+    {
+        UnloadImage(focusNodeP2->imageCard);
         focusNodeP2 = focusNodeP2->next;
     }
 }
@@ -228,6 +230,66 @@ void unloadsExtraImages(Stack *eI)
         UnloadImage(focusNode->imageCard);
         focusNode = focusNode->next;
     }
+}
+
+Stack *encapsulation(char temp[52][2])
+{
+    Stack *D = newStack();
+    int i;
+    int e;
+
+    D->cN = 0;
+
+    Node *focusNode;
+
+    char root[] = "cards/G0.png";
+
+    for(i = 0 ; i < 52 ; i++)
+    {
+        if(D->cN == 0)
+        {
+            D->head = malloc(sizeof(Node));
+            e = (int*)temp[i][0];
+
+            D->head->level = e - 48;
+            D->head->type = temp[i][1];
+            D->head->next = NULL;
+
+            root[6] = temp[i][1];
+            root[7] = temp[i][0];
+
+            D->head->imageCard = LoadImage(root);
+            D->head->textureCard = LoadTextureFromImage(D->head->imageCard);
+
+            focusNode = D->head;
+        }
+        else
+        {
+            focusNode->next = malloc(sizeof(Node));
+            focusNode = focusNode->next;
+
+            e = (int*)temp[i][0];
+
+            focusNode->level = e - 48;
+            focusNode->type = temp[i][1];
+            focusNode->next = NULL;
+
+            root[6] = temp[i][1];
+            root[7] = temp[i][0];
+
+            focusNode->imageCard = LoadImage(root);
+
+            if(i >= 25 && i % 2 == 0)
+                ImageRotateCW(&focusNode->imageCard);
+
+            focusNode->textureCard = LoadTextureFromImage(focusNode->imageCard);
+        }
+
+        D->cN++;
+
+    }
+
+    return D;
 }
 
 Stack *newDeck()
@@ -286,61 +348,7 @@ Stack *newDeck()
 
     }
 
-    Stack *D = newStack();
-    int e;
-
-    D->cN = 0;
-
-    Node *focusNode;
-
-    char root[] = "cards/G0.png";
-
-    for(i = 0 ; i < 52 ; i++)
-    {
-        if(D->cN == 0)
-        {
-            D->head = malloc(sizeof(Node));
-            e = (int*)temp[i][0];
-
-            D->head->level = e - 48;
-            D->head->type = temp[i][1];
-            D->head->next = NULL;
-
-            root[6] = temp[i][1];
-            root[7] = temp[i][0];
-
-            D->head->imageCard = LoadImage(root);
-            D->head->textureCard = LoadTextureFromImage(D->head->imageCard);
-
-            focusNode = D->head;
-        }
-        else
-        {
-            focusNode->next = malloc(sizeof(Node));
-            focusNode = focusNode->next;
-
-            e = (int*)temp[i][0];
-
-            focusNode->level = e - 48;
-            focusNode->type = temp[i][1];
-            focusNode->next = NULL;
-
-            root[6] = temp[i][1];
-            root[7] = temp[i][0];
-
-            focusNode->imageCard = LoadImage(root);
-
-            if(i >= 25 && i % 2 == 0)
-                ImageRotateCW(&focusNode->imageCard);
-
-            focusNode->textureCard = LoadTextureFromImage(focusNode->imageCard);
-        }
-
-        D->cN++;
-
-    }
-
-    return D;
+    return encapsulation(temp);
 
 }
 
@@ -362,7 +370,7 @@ Stack *newPlayer(Stack *D)
     return p;
 }
 
-int selectCard(Node *nT, Node *nT2, Stack *P1, Stack *P2)
+int selectCard(Stack *D, Node *nT, Node *nT2, Stack *P1, Stack *P2)
 {
     int i = 1;
     Node *focusNode = NULL;
@@ -371,6 +379,13 @@ int selectCard(Node *nT, Node *nT2, Stack *P1, Stack *P2)
         focusNode = P1->head;
     else if(nT2 != NULL)
         focusNode = P2->head;
+    else if(nT == NULL && nT2 == NULL)
+    {
+        if(D->t == 0)
+            focusNode = P1->head;
+        else if(D->t == 1)
+            focusNode = P2->head;
+    }
 
     while(focusNode != NULL)
     {
@@ -425,23 +440,23 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
         int c = 0;
         int i = 0;
 
-        c = selectCard(nT, nT2, P1, P2);
+        c = selectCard(D, nT, nT2, P1, P2);
 
-        //printf("[Deck] Type: %c level: %d\n\n", tC->type, tC->level);
+        if(c == 14)
+        {
+            EndDrawing();
+            CloseWindow();
+            exit(0);
+        }
 
         if(D->t == 0)
         {
             if(nT == NULL)
             {
-                //displayD(P1);
-                //printf("[P1] Introduce nUm de carta: ");
-                //scanf("%d", &c);
                 displayPDeck(P1, eI);
                 displayDeckCard(tC);
                 DrawText("P1", 1455, 560, 80, WHITE);
                 DrawText("P1", 1453, 560, 80, PINK);
-
-                //c = selectCard();
 
                 if(c != 0)
                 {
@@ -463,20 +478,13 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
                     c = 0;
                 }
             }
-            //printf("\n\n");
 
-            //printf("[P1] juega: %c%d\n", nT->type, nT->level);
-
-            //displayD(P2);
-            //printf("[P2] Introduce nUm de carta: ");
-            //scanf("%d", &c);
             if(nT != NULL)
             {
                 displayPDeck(P2, eI);
                 displayDeckCard(tC);
                 displaySelect(nT, nT2);
 
-                //c = selectCard();
                 DrawText("P2", 1455, 560, 80, WHITE);
                 DrawText("P2", 1453, 560, 80, BLUE);
 
@@ -490,6 +498,7 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
 
                     nT2 = pop(temp);
                     displaySelect(nT, nT2);
+
                     P2->cN--;
 
                     while(peek(temp) != NULL)
@@ -500,21 +509,16 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
                     c = 0;
                 }
             }
-            //printf("\n\n");
         }
         else if(D->t == 1)
         {
-            //displayD(P2);
-            //printf("[P2] Introduce nUm de carta: ");
-            //scanf("%d", &c);
             if(nT2 == NULL)
             {
                 displayPDeck(P2, eI);
                 displayDeckCard(tC);
 
-                //c = selectCard();
-                DrawText("P2", 1455, 588, 80, WHITE);
-                DrawText("P2", 1453, 588, 80, BLUE);
+                DrawText("P2", 1455, 560, 80, WHITE);
+                DrawText("P2", 1453, 560, 80, BLUE);
 
                 if(c != 0)
                 {
@@ -535,21 +539,15 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
                     c = 0;
                 }
             }
-            //printf("\n\n");
 
-            //printf("[P2] juega: %c%d\n", nT2->type, nT2->level);
-            //displayD(P1);
-            //printf("[P1] Introduce nUm de carta: ");
-            //scanf("%d", &c);
             if(nT2 != NULL)
             {
                 displayPDeck(P1, eI);
                 displayDeckCard(tC);
                 displaySelect(nT, nT2);
 
-                //c = selectCard();
-                DrawText("P1", 1455, 588, 80, WHITE);
-                DrawText("P1", 1453, 588, 80, PINK);
+                DrawText("P1", 1455, 560, 80, WHITE);
+                DrawText("P1", 1453, 560, 80, PINK);
 
                 if(c != 0)
                 {
@@ -571,18 +569,13 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
                     c = 0;
                 }
             }
-            //printf("\n\n");
         }
-
-        //printf("[Deck] Type: %c level: %d\n", tC->type, tC->level);
-        //printf("[P1] Type: %c level: %d\n", nT->type, nT->level);
-        //printf("[P2] Type: %c level: %d\n", nT2->type, nT2->level);
 
         if(nT != NULL && nT2 != NULL)
         {
             tC = pop(D);
             rotateImage(tC);
-            
+
             if(nT->type == nT2->type || nT->type == 'D' || nT2->type == 'D') //comparacion de nivel y comodin
             {
                 if(D->t == 0 && nT2->type == 'N' && nT->type == 'D')
@@ -738,12 +731,6 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
             nT2 = NULL;
         }
         EndDrawing();
-
-        //displayD(P1R2);
-        //displayD(V1);
-        //printf("--------\n\n");
-        //displayD(P2R2);
-        //displayD(V2);
     }
 
 }
@@ -763,7 +750,7 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI)
         int c;
         int i = 0;
 
-        c=selectCard(nT, nT2, P1R2, P1R2);
+        c=selectCard(D, nT, nT2, P1R2, P1R2);
 
         if(D->t == 0)
         {
@@ -789,13 +776,10 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI)
                     r = pop(temp);
                     push(P1R2, r);
                 }
-                //printf("\n\n");
+
                 c = 0;
             }
 
-            //displayD(P2R2);
-            //printf("[P2] Introduce nUm de carta: ");
-            //scanf("%d", &c);
             if(nT != NULL)
             {
                 displayPDeck(P2R2, eI);
@@ -822,21 +806,17 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI)
                         push(P2R2, r);
                     }
                     c = 0;
-                    //printf("\n\n");
                 }
             }
         }
         else if(D->t == 1)
         {
-            //displayD(P2R2);
-            //printf("[P2] Introduce nUm de carta: ");
-            //scanf("%d", &c);
             if(nT2 == NULL)
             {
                 displayPDeck(P2R2, eI);
 
-                DrawText("P2", 1455, 588, 80, WHITE);
-                DrawText("P2", 1453, 588, 80, BLUE);
+                DrawText("P2", 1455, 560, 80, WHITE);
+                DrawText("P2", 1453, 560, 80, BLUE);
 
                 if(c != 0)
                 {
@@ -856,13 +836,8 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI)
                         push(P2R2, r);
                     }
                     c = 0;
-                    //printf("\n\n");
                 }
             }
-
-            //displayD(P1R2);
-            //printf("[P1] Introduce nUm de carta: ");
-            //scanf("%d", &c);
 
             if(nT2 != NULL)
             {
@@ -891,12 +866,8 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI)
                     }
                     c = 0;
                 }
-                //printf("\n\n");
             }
         }
-
-        //printf("[P1] Type: %c level: %d\n", nT->type, nT->level);
-        //printf("[P2] Type: %c level: %d\n", nT2->type, nT2->level);
 
         if(nT != NULL && nT2 != NULL)
         {
@@ -916,7 +887,7 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI)
                 //COMPARACIONES DE MISMA CLASE
             else if(nT->type == nT2->type)
             {
-                if(nT->type == 'E' && nT->type == 'E') //caso 2 enanos
+                if(nT->type == 'E' && nT2->type == 'E') //caso 2 enanos
                 {
                     if(nT->level < nT2->level)
                     {
@@ -1337,13 +1308,13 @@ void claimWinner(Stack *V1, Stack *V2, Stack *eI)
     if(VT1 > VT2)
     {
         Winner(eI);
-        DrawText("P1 HA GANADO EL JUEGO", 1455, 560, 80, WHITE);
-        DrawText("P1 HA GANADO EL JUEGO", 1453, 560, 80, PINK);
+        DrawText("P1 HA GANADO EL JUEGO", 303, 560, 80, WHITE);
+        DrawText("P1 HA GANADO EL JUEGO", 300, 560, 80, PINK);
     }
     else if(VT2 > VT1)
     {
         Winner(eI);
-        DrawText("P2 HA GANADO EL JUEGO", 1455, 560, 80, WHITE);
-        DrawText("P2 HA GANADO EL JUEGO", 1453, 560, 80, PINK);
+        DrawText("P2 HA GANADO EL JUEGO", 303, 560, 80, WHITE);
+        DrawText("P2 HA GANADO EL JUEGO", 300, 560, 80, BLUE);
     }
 }
