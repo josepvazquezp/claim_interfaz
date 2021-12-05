@@ -61,14 +61,24 @@ Stack *extraImages()
 
     return n;
 }
+void rules ()
+{
+    Image rules = LoadImage("cards/rules.png");
+    Texture2D Trules = LoadTextureFromImage(rules);
+    UnloadImage(rules);
+    DrawTexture(Trules, 0 , 0, WHITE );
 
+}
 void drawStart()
 {
     Color backGround = {23, 32, 42, 255};
     Color textStart = {219, 182,0, 255};
     ClearBackground(backGround);
     DrawText("Claim", 500, 250, 250, WHITE);
+    DrawText("BY PABLITO & SEBAS", 700, 480, 20, WHITE);
     DrawText("Press enter to START", 450, 600, 60, textStart);
+    DrawText("Press shift for RULES", 565, 673, 40, textStart);
+
 }
 
 void drawRound2(Stack *eI)
@@ -419,8 +429,9 @@ int selectCard(Stack *D, Node *nT, Node *nT2, Stack *P1, Stack *P2)
         return 12;
     else if(i == 13 && IsKeyPressed(KEY_D))
         return 13;
-    else if(WindowShouldClose() || IsKeyPressed(KEY_ESCAPE))
+    else if(WindowShouldClose())
         return 14;
+
     else
         return 0;
 }
@@ -431,8 +442,9 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
     Node *tC;
     Node *nT = NULL;
     Node *nT2 = NULL;
+    int neXt = 0;
 
-    while(peek(D) != NULL && !WindowShouldClose())
+    while(peek(D) != NULL)
     {
         BeginDrawing();
         tC = peek(D);
@@ -440,14 +452,10 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
         int c = 0;
         int i = 0;
 
+        if (IsKeyPressed(KEY_SPACE))
+            neXt = 15;
         c = selectCard(D, nT, nT2, P1, P2);
 
-        if(c == 14)
-        {
-            EndDrawing();
-            CloseWindow();
-            exit(0);
-        }
 
         if(D->t == 0)
         {
@@ -476,6 +484,7 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
                         push(P1, r);
                     }
                     c = 0;
+                    neXt = 0;
                 }
             }
 
@@ -497,6 +506,8 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
                     }
 
                     nT2 = pop(temp);
+
+
                     displaySelect(nT, nT2);
 
                     P2->cN--;
@@ -537,6 +548,7 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
                         push(P2, r);
                     }
                     c = 0;
+                    neXt = 0;
                 }
             }
 
@@ -571,7 +583,7 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
             }
         }
 
-        if(nT != NULL && nT2 != NULL)
+        if(nT != NULL && nT2 != NULL )
         {
             tC = pop(D);
             rotateImage(tC);
@@ -729,6 +741,7 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
             tC = NULL;
             nT = NULL;
             nT2 = NULL;
+            neXt = 0;
         }
         EndDrawing();
     }
@@ -741,14 +754,21 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI)
     Stack *temp = newStack();
     Node *nT = NULL;
     Node *nT2 = NULL;
+    int end = 0;
+    int neXt = 0;
 
     while(peek(P1R2) != NULL && peek(P2R2) != NULL)
     {
+
         BeginDrawing();
 
         Node *r = NULL;
         int c;
         int i = 0;
+
+
+        if(IsKeyPressed(KEY_SPACE))
+            neXt =  15;
 
         c=selectCard(D, nT, nT2, P1R2, P1R2);
 
@@ -778,6 +798,7 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI)
                 }
 
                 c = 0;
+                neXt = 0;
             }
 
             if(nT != NULL)
@@ -836,6 +857,7 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI)
                         push(P2R2, r);
                     }
                     c = 0;
+                    neXt = 0;
                 }
             }
 
@@ -869,7 +891,7 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI)
             }
         }
 
-        if(nT != NULL && nT2 != NULL)
+        if(nT != NULL && nT2 != NULL )
         {
             //CONDICIONES GOBLIN Y KNIGHT
             if(D->t == 1 && nT->type == 'K' && nT2->type == 'G')
@@ -1035,9 +1057,15 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI)
             }
             nT = NULL;
             nT2 = NULL;
+            end++;
+            neXt = 0;
         }
         EndDrawing();
+
     }
+
+
+
 }
 /*
 void displayD(Stack * D)
@@ -1054,7 +1082,7 @@ void displayD(Stack * D)
 }
 */
 
-void claimWinner(Stack *V1, Stack *V2, Stack *eI)
+int claimWinner(Stack *V1, Stack *V2, Stack *eI)
 {
     int P1TG = 0;
     int P1TE = 0;
@@ -1307,14 +1335,20 @@ void claimWinner(Stack *V1, Stack *V2, Stack *eI)
 
     if(VT1 > VT2)
     {
+        return 1;
+        /*
         Winner(eI);
         DrawText("P1 HA GANADO EL JUEGO", 303, 560, 80, WHITE);
         DrawText("P1 HA GANADO EL JUEGO", 300, 560, 80, PINK);
+         */
     }
     else if(VT2 > VT1)
     {
+        return 0;
+        /*
         Winner(eI);
         DrawText("P2 HA GANADO EL JUEGO", 303, 560, 80, WHITE);
         DrawText("P2 HA GANADO EL JUEGO", 300, 560, 80, BLUE);
+         */
     }
 }
