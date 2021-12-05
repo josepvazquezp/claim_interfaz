@@ -32,7 +32,7 @@ void rotateImage(Node *tC);
 
 void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P1R2, Stack *P2R2, Stack *eI);
 void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI);
-void claimWinner(Stack *V1, Stack *V2, Stack *eI);
+int claimWinner(Stack *V1, Stack *V2, Stack *eI);
 
 //void displayD(Stack * D);
 void drawStart();
@@ -42,6 +42,7 @@ void displayPDeck(Stack *P, Stack *eI);
 void displaySelect(Node *nT, Node *nT2);
 void drawRound2(Stack *eI);
 void Winner(Stack *eI);
+void rules();
 
 int selectCard();
 
