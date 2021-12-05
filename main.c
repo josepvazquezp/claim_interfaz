@@ -22,6 +22,7 @@ int main(void)
     Stack *P2R2;
     Stack *P1;
     Stack *P2;
+    Stack *eI;
 
     InitWindow(screenWidth, screenHeight, "CLAIM");
 
@@ -29,11 +30,6 @@ int main(void)
 
     while (!WindowShouldClose())    // Detect window close button or ESC key
     {
-        BeginDrawing();
-
-        if(start == 1)
-            drawStart();
-
         if(shuffleR == 1)
         {
             V1 = newStack();
@@ -43,9 +39,15 @@ int main(void)
             P2R2 = newStack();
             P1 = newPlayer(D);
             P2 = newPlayer(D);
+            eI = extraImages();
 
             shuffleR = 0;
         }
+
+        BeginDrawing();
+
+        if(start == 1)
+            drawStart();
 
         if(GetKeyPressed() == KEY_ENTER)
             start = 0;
@@ -56,36 +58,30 @@ int main(void)
 
         if(start == 0)
         {
-            //displayPDeck(D, P1, peek(D));
-
             if(peek(D) != NULL)
             {
-                itsGoTimeBBY(D, V1, V2, P1, P2, P1R2, P2R2);
+                itsGoTimeBBY(D, V1, V2, P1, P2, P1R2, P2R2, eI);
                 nextround = 1;
             }
             else if(nextround == 1)
             {
-                drawRound2();
+                drawRound2(eI);
                 r2++;
             }
 
             if(peek(P1R2) != NULL && peek(P2R2) != NULL && r2 >= 50 )
             {
-                round2(D, V1, V2, P1R2, P2R2);
+                round2(D, V1, V2, P1R2, P2R2, eI);
                 nextround = 0;
                 winner = 1;
             }
-
             //else
             //{   if (winner == 1)
             //{
-            //    claimWinner(V1, V2);
+            //    claimWinner(V1, V2, eI);
             //  }
 
             //}
-
-
-
         }
 
         EndDrawing();
@@ -93,6 +89,12 @@ int main(void)
 
     CloseWindow();
 
+    unloadsExtraImages(eI);
+
+    if(peek(D) != NULL)
+        unloadsImages(D, P1, P2);
+    else if(peek(P1R2) != NULL && peek(P2R2) != NULL)
+        unloadsImages(D, P1R2, P1R2);
 
     return 0;
 }

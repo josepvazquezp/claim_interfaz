@@ -6,6 +6,62 @@
 #include "stack.h"
 #include "raylib.h"
 
+Stack *extraImages()
+{
+    Stack *n = newStack();
+    Node *tempNode = malloc(sizeof(Node));
+
+    //cargar Winner
+    tempNode->type = 'R';
+    tempNode->level = 3;
+    tempNode->imageCard = LoadImage("cards/Winner.png");
+    tempNode->textureCard = LoadTextureFromImage(tempNode->imageCard);
+    push(n, tempNode);
+    n->cN++;
+
+    //cargar round2
+    tempNode->type = 'R';
+    tempNode->level = 3;
+    tempNode->imageCard = LoadImage("cards/R2.png");
+    tempNode->textureCard = LoadTextureFromImage(tempNode->imageCard);
+    push(n, tempNode);
+    n->cN++;
+
+    //cargar P2
+    tempNode->type = 'P';
+    tempNode->level = 2;
+    tempNode->imageCard = LoadImage("cards/P2.png");
+    tempNode->textureCard = LoadTextureFromImage(tempNode->imageCard);
+    push(n, tempNode);
+    n->cN++;
+
+    //cargar P1
+    tempNode->type = 'P';
+    tempNode->level = 1;
+    tempNode->imageCard = LoadImage("cards/P1.png");
+    tempNode->textureCard = LoadTextureFromImage(tempNode->imageCard);
+    push(n, tempNode);
+    n->cN++;
+
+    //cargar cardBack
+    tempNode->type = 'P';
+    tempNode->level = 1;
+    tempNode->imageCard = LoadImage("cards/fback.png");
+    tempNode->textureCard = LoadTextureFromImage(tempNode->imageCard);
+    push(n, tempNode);
+    n->cN++;
+
+    //cargar tablero
+    tempNode->type = 'T';
+    tempNode->level = 0;
+    tempNode->imageCard = LoadImage("cards/Tablero.png");
+    tempNode->textureCard = LoadTextureFromImage(tempNode->imageCard);
+    push(n, tempNode);
+    n->cN++;
+
+    return n;
+}
+
 void drawStart()
 {
     Color backGround = {23, 32, 42, 255};
@@ -15,29 +71,38 @@ void drawStart()
     DrawText("Press enter to START", 450, 600, 60, textStart);
 }
 
-void drawRound2()
+void drawRound2(Stack *eI)
 {
-    Image round2 = LoadImage("cards/R2.png");
-    Texture2D textureR2 = LoadTextureFromImage(round2);
-    UnloadImage(round2);
-    DrawTexture(textureR2, 0, 0, WHITE);
+    Node *focusNode = eI->head;
+
+    for(int i = 0 ; i < 4 ; i++)
+        focusNode = focusNode->next;
+
+    DrawTexture(focusNode->textureCard, 0, 0, WHITE);
 }
 
-void Winner()
+void Winner(Stack *eI)
 {
-    Image W = LoadImage("cards/Winner.png");
-    Texture2D textureW = LoadTextureFromImage(W);
-    UnloadImage(W);
-    DrawTexture(textureW, 0, 0, WHITE);
+    Node *focusNode = eI->head;
+
+    for(int i = 0 ; i < 5 ; i++)
+        focusNode = focusNode->next;
+
+    DrawTexture(focusNode->textureCard, 0, 0, WHITE);
+}
+
+void rotateImage(Node *tC)
+{
+    ImageRotateCCW(&tC->imageCard);
+    tC->textureCard = LoadTextureFromImage(tC->imageCard);
 }
 
 
-void drawTable(Stack *P)
+void drawTable(Stack *P, Stack *eI)
 {
-    Image backG = LoadImage("cards/Tablero.png");
-    Texture2D textureBack = LoadTextureFromImage(backG);
-    UnloadImage(backG);
-    DrawTexture(textureBack, 0, 0, WHITE);
+    Node *focusEI = eI->head;
+    DrawTexture(focusEI->textureCard, 0, 0, WHITE);
+    focusEI = focusEI->next->next;
 
     Node *focusNode = P->head;
     int i = 0;
@@ -66,8 +131,6 @@ void drawTable(Stack *P)
 
     }
 
-    //DrawRectangle(1390, 382, 202, 135, WHITE);
-
     DrawRectangle(657, 350, 135, 202, WHITE);
     DrawRectangle(976, 350, 135, 202, WHITE);
 
@@ -77,59 +140,43 @@ void drawTable(Stack *P)
     DrawText("VS", 843, 420, 60, WHITE);
     DrawText("VS", 840, 420, 60, RED);
 
-    Image P1 = LoadImage("cards/P1.png");
-    Texture2D TP1= LoadTextureFromImage(P1);
-    UnloadImage(P1);
-    DrawTexture(TP1, 653, 558, WHITE);
-    Image P2 = LoadImage("cards/P2.png");
-    Texture2D TP2= LoadTextureFromImage(P2);
-    UnloadImage(P2);
-    DrawTexture(TP2, 970, 560, WHITE);
+    DrawTexture(focusEI->textureCard, 653, 558, WHITE);
+    focusEI = focusEI->next;
+    DrawTexture(focusEI->textureCard, 970, 560, WHITE);
 }
 
 void displayDeckCard(Node *tC)
 {
     DrawRectangle(1390, 382, 202, 135, WHITE);
-    Image deck = LoadImage(tC->card);
-    ImageRotateCW(&deck);
-    Texture2D textureDeck = LoadTextureFromImage(deck);
-    UnloadImage(deck);
-    DrawTexture(textureDeck, 1392, 384, WHITE);
+    DrawTexture(tC->textureCard, 1392, 384, WHITE);
 }
 
-void displayPDeck(Stack *D, Stack *P)
+void displayPDeck(Stack *P, Stack *eI)
 {
-    drawTable(P);
+    drawTable(P, eI);
 
     Node *focusNodeP = P->head;
 
     int i = 0;
     int ac = 15;
-    Texture2D tTemp;
 
-    Image backC = LoadImage("cards/fback.png");
-    Image tI;
-    Texture2D  tBack = LoadTextureFromImage(backC);
-    UnloadImage(backC);
+    Node *focusEI = eI->head;
+    focusEI = focusEI->next;
 
     while(focusNodeP != NULL)
     {
-        tI = LoadImage(focusNodeP->card);
-        tTemp = LoadTextureFromImage(tI);
-        UnloadImage(tI);
-
         if(i < 10)
         {
-            DrawTexture(tTemp, ac, 690, WHITE);
-            DrawTexture(tBack, ac, 10, WHITE);
+            DrawTexture(focusNodeP->textureCard, ac, 690, WHITE);
+            DrawTexture(focusEI->textureCard, ac, 10, WHITE);
         }
         else
         {
             if(i == 10)
                 ac = 15;
 
-            DrawTexture(tTemp, ac, 480, WHITE);
-            DrawTexture(tBack, ac, 220, WHITE);
+            DrawTexture(focusNodeP->textureCard, ac, 480, WHITE);
+            DrawTexture(focusEI->textureCard, ac, 220, WHITE);
         }
 
         ac += 160;
@@ -144,18 +191,42 @@ void displayPDeck(Stack *D, Stack *P)
 void displaySelect(Node *nT, Node *nT2)
 {
     if(nT != NULL)
-    {
-        Image p1 = LoadImage(nT->card);
-        Texture2D tP1 = LoadTextureFromImage(p1);
-        UnloadImage(p1);
-        DrawTexture(tP1, 657, 350, WHITE);
-    }
+        DrawTexture(nT->textureCard, 657, 350, WHITE);
     if(nT2 != NULL)
+        DrawTexture(nT2->textureCard, 976, 350, WHITE);
+}
+
+void unloadsImages(Stack *D, Stack *P1, Stack *P2)
+{
+    Node *focusNodeDeck = D->head;
+    Node *focusNodeP1 = P1->head;
+    Node *focusNodeP2 = P2->head;
+
+    while(focusNodeDeck != NULL)
     {
-        Image p2 = LoadImage(nT2->card);
-        Texture2D tP2 = LoadTextureFromImage(p2);
-        UnloadImage(p2);
-        DrawTexture(tP2, 976, 350, WHITE);
+        UnloadImage(focusNodeDeck->imageCard);
+        focusNodeDeck = focusNodeDeck->next;
+    }
+
+    while(focusNodeP1 != NULL && focusNodeP2 != NULL)
+    {
+
+        UnloadImage(focusNodeP1->imageCard);
+        UnloadImage(focusNodeP2->imageCard);
+
+        focusNodeP1 = focusNodeP1->next;
+        focusNodeP2 = focusNodeP2->next;
+    }
+}
+
+void unloadsExtraImages(Stack *eI)
+{
+    Node *focusNode = eI->head;
+
+    while(focusNode != NULL)
+    {
+        UnloadImage(focusNode->imageCard);
+        focusNode = focusNode->next;
     }
 }
 
@@ -223,8 +294,6 @@ Stack *newDeck()
     Node *focusNode;
 
     char root[] = "cards/G0.png";
-    Image iTemp;
-    Texture2D tTemp;
 
     for(i = 0 ; i < 52 ; i++)
     {
@@ -240,7 +309,8 @@ Stack *newDeck()
             root[6] = temp[i][1];
             root[7] = temp[i][0];
 
-            strcpy(D->head->card, root);
+            D->head->imageCard = LoadImage(root);
+            D->head->textureCard = LoadTextureFromImage(D->head->imageCard);
 
             focusNode = D->head;
         }
@@ -258,7 +328,12 @@ Stack *newDeck()
             root[6] = temp[i][1];
             root[7] = temp[i][0];
 
-            strcpy(focusNode->card, root);;
+            focusNode->imageCard = LoadImage(root);
+
+            if(i >= 25 && i % 2 == 0)
+                ImageRotateCW(&focusNode->imageCard);
+
+            focusNode->textureCard = LoadTextureFromImage(focusNode->imageCard);
         }
 
         D->cN++;
@@ -335,7 +410,7 @@ int selectCard(Node *nT, Node *nT2, Stack *P1, Stack *P2)
         return 0;
 }
 
-void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P1R2, Stack *P2R2)
+void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P1R2, Stack *P2R2, Stack *eI)
 {
     Stack *temp = newStack();
     Node *tC;
@@ -361,7 +436,7 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
                 //displayD(P1);
                 //printf("[P1] Introduce nUm de carta: ");
                 //scanf("%d", &c);
-                displayPDeck(D, P1);
+                displayPDeck(P1, eI);
                 displayDeckCard(tC);
                 DrawText("P1", 1455, 560, 80, WHITE);
                 DrawText("P1", 1453, 560, 80, PINK);
@@ -397,7 +472,7 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
             //scanf("%d", &c);
             if(nT != NULL)
             {
-                displayPDeck(D, P2);
+                displayPDeck(P2, eI);
                 displayDeckCard(tC);
                 displaySelect(nT, nT2);
 
@@ -434,7 +509,7 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
             //scanf("%d", &c);
             if(nT2 == NULL)
             {
-                displayPDeck(D, P2);
+                displayPDeck(P2, eI);
                 displayDeckCard(tC);
 
                 //c = selectCard();
@@ -468,7 +543,7 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
             //scanf("%d", &c);
             if(nT2 != NULL)
             {
-                displayPDeck(D, P1);
+                displayPDeck(P1, eI);
                 displayDeckCard(tC);
                 displaySelect(nT, nT2);
 
@@ -506,6 +581,8 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
         if(nT != NULL && nT2 != NULL)
         {
             tC = pop(D);
+            rotateImage(tC);
+            
             if(nT->type == nT2->type || nT->type == 'D' || nT2->type == 'D') //comparacion de nivel y comodin
             {
                 if(D->t == 0 && nT2->type == 'N' && nT->type == 'D')
@@ -671,7 +748,7 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
 
 }
 
-void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2)
+void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI)
 {
 
     Stack *temp = newStack();
@@ -692,7 +769,7 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2)
         {
             if(nT == NULL)
             {
-                displayPDeck(D, P1R2);
+                displayPDeck(P1R2, eI);
 
                 DrawText("P1", 1455, 560, 80, WHITE);
                 DrawText("P1", 1453, 560, 80, PINK);
@@ -721,7 +798,7 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2)
             //scanf("%d", &c);
             if(nT != NULL)
             {
-                displayPDeck(D, P2R2);
+                displayPDeck(P2R2, eI);
                 displaySelect(nT, nT2);
 
                 DrawText("P2", 1455, 560, 80, WHITE);
@@ -756,7 +833,7 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2)
             //scanf("%d", &c);
             if(nT2 == NULL)
             {
-                displayPDeck(D, P2R2);
+                displayPDeck(P2R2, eI);
 
                 DrawText("P2", 1455, 588, 80, WHITE);
                 DrawText("P2", 1453, 588, 80, BLUE);
@@ -789,7 +866,7 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2)
 
             if(nT2 != NULL)
             {
-                displayPDeck(D, P1R2);
+                displayPDeck(P1R2, eI);
                 displaySelect(nT,nT2);
 
                 DrawText("P1", 1455, 560, 80, WHITE);
@@ -1006,7 +1083,7 @@ void displayD(Stack * D)
 }
 */
 
-void claimWinner(Stack *V1, Stack *V2)
+void claimWinner(Stack *V1, Stack *V2, Stack *eI)
 {
     int P1TG = 0;
     int P1TE = 0;
@@ -1021,29 +1098,39 @@ void claimWinner(Stack *V1, Stack *V2)
     int P1KMax = 0;
 
 
-    while (peek(V1) != NULL) {
-        if (V1->head->type == 'G') {
-            if (V1->head->level > P1GMax)
+    while(peek(V1) != NULL)
+    {
+        if(V1->head->type == 'G')
+        {
+            if(V1->head->level > P1GMax)
                 P1GMax = V1->head->level;
 
             P1TG++;
-        } else if (V1->head->type == 'E') {
-            if (V1->head->level > P1EMax)
+        }
+        else if(V1->head->type == 'E')
+        {
+            if(V1->head->level > P1EMax)
                 P1EMax = V1->head->level;
 
             P1TE++;
-        } else if (V1->head->type == 'N') {
-            if (V1->head->level > P1NMax)
+        }
+        else if(V1->head->type == 'N')
+        {
+            if(V1->head->level > P1NMax)
                 P1NMax = V1->head->level;
 
             P1TN++;
-        } else if (V1->head->type == 'D') {
-            if (V1->head->level > P1DMax)
+        }
+        else if(V1->head->type == 'D')
+        {
+            if(V1->head->level > P1DMax)
                 P1DMax = V1->head->level;
 
             P1TD++;
-        } else if (V1->head->type == 'K') {
-            if (V1->head->level > P1KMax)
+        }
+        else if(V1->head->type == 'K')
+        {
+            if(V1->head->level > P1KMax)
                 P1KMax = V1->head->level;
 
             P1TK++;
@@ -1064,29 +1151,39 @@ void claimWinner(Stack *V1, Stack *V2)
     int P2DMax = 0;
     int P2KMax = 0;
 
-    while (peek(V2) != NULL) {
-        if (V2->head->type == 'G') {
+    while(peek(V2) != NULL)
+    {
+        if(V2->head->type == 'G')
+        {
             if (V2->head->level > P2GMax)
                 P2GMax = V2->head->level;
 
             P2TG++;
-        } else if (V2->head->type == 'E') {
-            if (V2->head->level > P2EMax)
+        }
+        else if(V2->head->type == 'E')
+        {
+            if(V2->head->level > P2EMax)
                 P2EMax = V2->head->level;
 
             P2TE++;
-        } else if (V2->head->type == 'N') {
-            if (V2->head->level > P2NMax)
+        }
+        else if(V2->head->type == 'N')
+        {
+            if(V2->head->level > P2NMax)
                 P2NMax = V2->head->level;
 
             P2TN++;
-        } else if (V2->head->type == 'D') {
-            if (V2->head->level > P2DMax)
+        }
+        else if(V2->head->type == 'D')
+        {
+            if(V2->head->level > P2DMax)
                 P2DMax = V2->head->level;
 
             P2TD++;
-        } else if (V2->head->type == 'K') {
-            if (V2->head->level > P2KMax)
+        }
+        else if(V2->head->type == 'K')
+        {
+            if(V2->head->level > P2KMax)
                 P2KMax = V2->head->level;
 
             P2TK++;
@@ -1101,95 +1198,135 @@ void claimWinner(Stack *V1, Stack *V2)
     printf("[P2GMax]: %d\t[P2EMax]: %d\t[P2NMax]: %d\t[P2DMax]: %d\t[P2KMax]: %d\t\n", P2GMax, P2EMax, P2NMax, P2DMax, P2KMax);
     */
     //Goblins
-    if (P1TG > P2TG) {
+    if(P1TG > P2TG)
+    {
         //printf("Mas Goblins Votaron por el Jugador 1\n");
         VT1++;
-    } else if (P2TG > P1TG) {
+    }
+    else if(P2TG > P1TG)
+    {
         //printf("Mas Goblins Votaron por el Jugador 2\n");
         VT2++;
-    } else if (P1TG == P2TG) {
+    }
+    else if(P1TG == P2TG)
+    {
         //printf("Empate\n");
 
-        if (P1GMax > P2GMax) {
+        if(P1GMax > P2GMax)
+        {
             //printf("El Jugador 1 Tiene el voto del Goblin mas alto, por lo que se lleva el voto de los Goblins\n");
             VT1++;
-        } else if (P2GMax > P1GMax) {
+        }
+        else if(P2GMax > P1GMax)
+        {
             //printf("El Jugador 2 Tiene el voto del Goblin mas alto, por lo que se lleva el voto de los Goblins\n");
             VT2++;
         }
     }
 
     //Enanos
-    if (P1TE > P2TE) {
+    if(P1TE > P2TE)
+    {
         //printf("Mas Enanos Votaron por el Jugador 1\n");
         VT1++;
-    } else if (P2TE > P1TE) {
+    }
+    else if(P2TE > P1TE)
+    {
         //printf("Mas Enanos Votaron por el Jugador 2\n");
         VT2++;
-    } else if (P1TE == P2TE) {
+    }
+    else if(P1TE == P2TE)
+    {
         //printf("Empate\n");
 
-        if (P1EMax > P2EMax) {
+        if(P1EMax > P2EMax)
+        {
             //printf("El Jugador 1 Tiene el voto del Enano mas alto, por lo que se lleva el voto de los Enanos\n");
             VT1++;
-        } else if (P2EMax > P1EMax) {
+        }
+        else if (P2EMax > P1EMax)
+        {
             //printf("El Jugador 2 Tiene el voto del Enano mas alto, por lo que se lleva el voto de los Enanos\n");
             VT2++;
         }
     }
 
     //necromancers
-    if (P1TN > P2TN) {
+    if(P1TN > P2TN)
+    {
         //printf("Mas Necromancers Votaron por el Jugador 1\n");
         VT1++;
-    } else if (P2TN > P1TN) {
+    }
+    else if(P2TN > P1TN)
+    {
         //printf("Mas Necromancers Votaron por el Jugador 2\n");
         VT2++;
-    } else if (P1TN == P2TN) {
+    }
+    else if(P1TN == P2TN)
+    {
         //printf("Empate\n");
 
-        if (P1NMax > P2NMax) {
+        if(P1NMax > P2NMax)
+        {
             //printf("El Jugador 1 Tiene el voto del Necromancer mas alto, por lo que se lleva el voto de los Necromancers\n");
             VT1++;
-        } else if (P2NMax > P1NMax) {
+        }
+        else if(P2NMax > P1NMax)
+        {
             //printf("El Jugador 2 Tiene el voto del Necromancer mas alto, por lo que se lleva el voto de los Necromancers\n");
             VT2++;
         }
     }
 
     //doppelgangers
-    if (P1TD > P2TD) {
+    if(P1TD > P2TD)
+    {
         //printf("Mas Doppelgangers Votaron por el Jugador 1\n");
         VT1++;
-    } else if (P2TD > P1TD) {
+    }
+    else if(P2TD > P1TD)
+    {
         //printf("Mas Doppelgangers Votaron por el Jugador 2\n");
         VT2++;
-    } else if (P1TD == P2TD) {
+    }
+    else if(P1TD == P2TD)
+    {
         //printf("Empate\n");
 
-        if (P1DMax > P2DMax) {
+        if(P1DMax > P2DMax)
+        {
             //printf("El Jugador 1 Tiene el voto del Doppelganger mas alto, por lo que se lleva el voto de los Doppelgangers\n");
             VT1++;
-        } else if (P2DMax > P1DMax) {
+        }
+        else if(P2DMax > P1DMax)
+        {
             //printf("El Jugador 2 Tiene el voto del Doppelganger mas alto, por lo que se lleva el voto de los Doppelgangers\n");
             VT2++;
         }
     }
 
     //knights
-    if (P1TK > P2TK) {
+    if(P1TK > P2TK)
+    {
         //printf("Mas Knights Votaron por el Jugador 1\n");
         VT1++;
-    } else if (P2TK > P1TK) {
+    }
+    else if(P2TK > P1TK)
+    {
         //printf("Mas Knights Votaron por el Jugador 2\n");
         VT2++;
-    } else if (P1TK == P2TK) {
+    }
+    else if(P1TK == P2TK)
+    {
         //printf("Empate\n");
 
-        if (P1KMax > P2KMax) {
+        if(P1KMax > P2KMax)
+        {
             //printf("El Jugador 1 Tiene el voto del Knight mas alto, por lo que se lleva el voto de los Knights\n");
             VT1++;
-        } else if (P2KMax > P1KMax) {
+        }
+        else if(P2KMax > P1KMax)
+        {
             //printf("El Jugador 2 Tiene el voto del Knight mas alto, por lo que se lleva el voto de los Knights\n");
             VT2++;
         }
@@ -1197,12 +1334,15 @@ void claimWinner(Stack *V1, Stack *V2)
 
     //decision de GANADOR FINAL
 
-    if (VT1 > VT2) {
-        Winner();
+    if(VT1 > VT2)
+    {
+        Winner(eI);
         DrawText("P1 HA GANADO EL JUEGO", 1455, 560, 80, WHITE);
         DrawText("P1 HA GANADO EL JUEGO", 1453, 560, 80, PINK);
-    } else if (VT2 > VT1) {
-        Winner();
+    }
+    else if(VT2 > VT1)
+    {
+        Winner(eI);
         DrawText("P2 HA GANADO EL JUEGO", 1455, 560, 80, WHITE);
         DrawText("P2 HA GANADO EL JUEGO", 1453, 560, 80, PINK);
     }
