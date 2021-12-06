@@ -340,164 +340,6 @@ void unloadsExtraImages(Stack *eI)
         focusNode = focusNode->next;
     }
 }
-/*
-void saveGame(Stack *D, Stack *P1, Stack *P2, Stack *P1R2, Stack *P2R2, Stack *V1, Stack *V2)
-{
-    /*Color sText= {5, 211, 102, 255};
-    DrawRectangle(400, 300, 1000, 150, BLACK);
-    DrawText("Saving Data ...", 843, 420, 60, WHITE);
-    DrawText("Saving Data ...", 840, 420, 60, sText);
-
-    //guardar deck
-    if(peek(D) != NULL)
-    {
-        FILE *saveD = fopen("save_data/deck.dat", "w+b");
-
-        if(saveD)
-        {
-            fwrite(D, sizeof(Stack), 1, saveD);
-
-            Node *focusNode = D->head;
-
-            while(focusNode != NULL)
-            {
-                fwrite(focusNode, sizeof(Node), 1, saveD);
-                /*fwrite(focusNode->imageCard, sizeof(Image), 1, saveD);
-                fwrite(focusNode->textureCard, sizeof(Texture2D), 1, saveD);
-                focusNode = focusNode->next;
-            }
-
-            fclose(saveD);
-        }
-    }
-
-    //guardar P1
-    if(peek(P1) != NULL)
-    {
-        FILE *saveP1 = fopen("save_data/p1.dat", "w+b");
-
-        if(saveP1)
-            fwrite(P1, sizeof(Stack), 1, saveP1);
-
-        fclose(saveP1);
-    }
-
-    //guardar P2
-    if(peek(P2) != NULL)
-    {
-        FILE *saveP2 = fopen("save_data/p2.dat", "w+b");
-
-        if(saveP2)
-            fwrite(P2, sizeof(Stack), 1, saveP2);
-
-        fclose(saveP2);
-    }
-
-    //guardar P1R2
-    if(peek(P1R2) != NULL)
-    {
-        FILE *saveP1R2 = fopen("save_data/p1_r2.dat", "w+b");
-
-        if(saveP1R2)
-            fwrite(P1R2, sizeof(Stack), 1, saveP1R2);
-
-        fclose(saveP1R2);
-    }
-
-    //guardar P2R2
-    if(peek(P2R2) != NULL)
-    {
-        FILE *saveP2R2 = fopen("save_data/p2_r2.dat", "w+b");
-
-        if(saveP2R2)
-            fwrite(P2R2, sizeof(Stack), 1, saveP2R2);
-
-        fclose(saveP2R2);
-    }
-
-    //guardar V1
-    if(peek(V1) != NULL)
-    {
-        FILE *saveV1 = fopen("save_data/v1.dat", "w+b");
-
-        if(saveV1)
-            fwrite(V1, sizeof(Stack), 1, saveV1);
-
-        fclose(saveV1);
-    }
-
-    //guardar V2
-    if(peek(V2) != NULL)
-    {
-        FILE *saveV2 = fopen("save_data/v2.dat", "w+b");
-
-        if(saveV2)
-            fwrite(V2, sizeof(Stack), 1, saveV2);
-
-        fclose(saveV2);
-    }
-
-    Color sText= {5, 211, 102, 255};
-    DrawRectangle(400, 300, 1000, 150, BLACK);
-    DrawText("Saving Data ...", 843, 420, 60, WHITE);
-    DrawText("Saving Data ...", 840, 420, 60, sText);
-
-}
-
-Stack *loadDeck(Stack *D)
-{
-    FILE *save = fopen("deck.dat", "r+b");
-
-    if(save != NULL)
-    {
-        D = newStack();
-        fread(D, sizeof(Stack), 1, save);
-
-        D->head = malloc(sizeof(Node));
-
-        Node *focusNode = D->head;
-
-        while(focusNode != NULL)
-        {
-            fread(focusNode, sizeof(Node), 1, save);
-            focusNode = focusNode->next;
-        }
-
-        fclose(save);
-    }
-    /*else
-        D = newDeck();
-
-    return D;
-}
-
-Stack *loadP1(Stack *P1)
-{
-    FILE *save = fopen("p1.dat", "r+b");
-
-    if(save != NULL)
-    {
-        P1 = newStack();
-        fread(P1, sizeof(Stack), 1, save);
-        fclose(save);
-    }
-
-    return P1;
-}
-
-Stack *loadP2(Stack *P2)
-{
-    FILE *save = fopen("p2.dat", "r+b");
-
-    if(save != NULL)
-    {
-        P2 = newStack();
-        fread(P2, sizeof(Stack), 1, save);
-        fclose(save);
-    }
-
-    return P2;
-}*/
 
 Stack *encapsulation(char temp[52][2])
 {
@@ -815,8 +657,7 @@ int craig(Stack *D, Stack *P2, Node *nT)
 
             if(i == 1) //ultima carta
                 return 1;
-
-            if(cT != 0) //checar si hay carta del mismo tipo
+            else if(cT != 0) //checar si hay carta del mismo tipo
                 return cT;
             else if(cK != 0 && nT->type == 'G') //caso de no tener Goblin checar si hay knight para matar Goblin
                 return cK;
@@ -941,8 +782,7 @@ int craig(Stack *D, Stack *P2, Node *nT)
 
             if(i == 1) //ultima carta
                 return 1;
-
-            if(cE != 0)
+            else if(cE != 0)
                 return cE;
             else if(cT != 0) //checar si hay carta del mismo tipo
                 return cT;
@@ -1042,12 +882,17 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
             }
             else if(nT != NULL)
             {
-                displayPDeck(P2, eI);
+                if(AI == 0)
+                    displayPDeck(P2, eI);
+
                 displayDeckCard(tC);
                 displaySelect(nT, nT2);
 
-                DrawText("P2", 1455, 560, 80, WHITE);
-                DrawText("P2", 1453, 560, 80, BLUE);
+                if(AI == 0)
+                {
+                    DrawText("P2", 1455, 560, 80, WHITE);
+                    DrawText("P2", 1453, 560, 80, BLUE);
+                }
 
                 if(AI == 1)
                     c = craig(D, P2, nT);
@@ -1086,11 +931,16 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
             }
             else if(nT2 == NULL)
             {
-                displayPDeck(P2, eI);
+                if(AI == 0)
+                    displayPDeck(P2, eI);
+
                 displayDeckCard(tC);
 
-                DrawText("P2", 1455, 560, 80, WHITE);
-                DrawText("P2", 1453, 560, 80, BLUE);
+                if(AI == 0)
+                {
+                    DrawText("P2", 1455, 560, 80, WHITE);
+                    DrawText("P2", 1453, 560, 80, BLUE);
+                }
 
                 if(AI == 1)
                     c = craig(D, P2, nT);
@@ -1145,9 +995,6 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
                 }
             }
         }
-
-        /*if(IsKeyPressed(KEY_V))
-            saveGame(D, P1, P2, P1R2, P2R2, V1, V2);*/
 
         if(nT != NULL && nT2 != NULL && neXt == 15)
         {
@@ -1372,11 +1219,12 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI, 
             }
            else if(nT != NULL)
             {
-                displayPDeck(P2R2, eI);
-                displaySelect(nT, nT2);
-
-                DrawText("P2", 1455, 560, 80, WHITE);
-                DrawText("P2", 1453, 560, 80, BLUE);
+                if(AI == 0)
+                {
+                    displayPDeck(P2R2, eI);
+                    DrawText("P2", 1455, 560, 80, WHITE);
+                    DrawText("P2", 1453, 560, 80, BLUE);
+                }
 
                 if(AI == 1)
                     c = craig(D, P2R2, nT);
@@ -1411,10 +1259,16 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI, 
             }
             else if(nT2 == NULL)
             {
-                displayPDeck(P2R2, eI);
+                if(AI == 0)
+                    displayPDeck(P2R2, eI);
 
-                DrawText("P2", 1455, 560, 80, WHITE);
-                DrawText("P2", 1453, 560, 80, BLUE);
+                displaySelect(nT, nT2);
+
+                if(AI == 0)
+                {
+                    DrawText("P2", 1455, 560, 80, WHITE);
+                    DrawText("P2", 1453, 560, 80, BLUE);
+                }
 
                 if(AI == 1)
                     c = craig(D, P2R2, nT);

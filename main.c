@@ -38,11 +38,11 @@ int main(void)
         {
             V1 = newStack();
             V2 = newStack();
-            D = newDeck();//loadDeck(D);//
+            D = newDeck();
             P1R2 = newStack();
             P2R2 = newStack();
-            P1 = newPlayer(D);//loadP1(P1);//
-            P2 = newPlayer(D);//loadP2(P2);//
+            P1 = newPlayer(D);
+            P2 = newPlayer(D);
             eI = extraImages();
 
             shuffleR = 0;
