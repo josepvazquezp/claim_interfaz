@@ -11,9 +11,25 @@ Stack *extraImages()
     Stack *n = newStack();
     Node *tempNode = malloc(sizeof(Node));
 
-    //cargar Winner
+    //cargar backCard180
+    tempNode->type = 'B';
+    tempNode->level = 6;
+    tempNode->imageCard = LoadImage("cards/back.png");
+    tempNode->textureCard = LoadTextureFromImage(tempNode->imageCard);
+    push(n, tempNode);
+    n->cN++;
+
+    //cargar Rules
     tempNode->type = 'R';
-    tempNode->level = 3;
+    tempNode->level = 5;
+    tempNode->imageCard = LoadImage("cards/rules.png");
+    tempNode->textureCard = LoadTextureFromImage(tempNode->imageCard);
+    push(n, tempNode);
+    n->cN++;
+
+    //cargar Winner
+    tempNode->type = 'W';
+    tempNode->level = 4;
     tempNode->imageCard = LoadImage("cards/Winner.png");
     tempNode->textureCard = LoadTextureFromImage(tempNode->imageCard);
     push(n, tempNode);
@@ -61,14 +77,7 @@ Stack *extraImages()
 
     return n;
 }
-void rules ()
-{
-    Image rules = LoadImage("cards/rules.png");
-    Texture2D Trules = LoadTextureFromImage(rules);
-    UnloadImage(rules);
-    DrawTexture(Trules, 0 , 0, WHITE );
 
-}
 void drawStart()
 {
     Color backGround = {23, 32, 42, 255};
@@ -77,7 +86,7 @@ void drawStart()
     DrawText("Claim", 500, 250, 250, WHITE);
     DrawText("BY PABLITO & SEBAS", 700, 480, 20, WHITE);
     DrawText("Press enter to START", 450, 600, 60, textStart);
-    DrawText("Press shift for RULES", 565, 673, 40, textStart);
+    DrawText("Press shift for RULES", 565, 673, 40, YELLOW);
 
 }
 
@@ -91,7 +100,17 @@ void drawRound2(Stack *eI)
     DrawTexture(focusNode->textureCard, 0, 0, WHITE);
 }
 
-void Winner(Stack *eI)
+void displayRules(Stack *eI)
+{
+    Node *focusNode = eI->head;
+
+    for(int i = 0 ; i < 6 ; i++)
+        focusNode = focusNode->next;
+
+    DrawTexture(focusNode->textureCard, 0 , 0, WHITE );
+}
+
+void Winner(Stack *eI, int w)
 {
     Node *focusNode = eI->head;
 
@@ -99,6 +118,17 @@ void Winner(Stack *eI)
         focusNode = focusNode->next;
 
     DrawTexture(focusNode->textureCard, 0, 0, WHITE);
+
+    if(w == 1)
+    {
+        DrawText("P1 HA GANADO EL JUEGO", 273, 560, 80, WHITE);
+        DrawText("P1 HA GANADO EL JUEGO", 270, 560, 80, PINK);
+    }
+    else if(w == 2)
+    {
+        DrawText("P2 HA GANADO EL JUEGO", 273, 560, 80, WHITE);
+        DrawText("P2 HA GANADO EL JUEGO", 270, 560, 80, BLUE);
+    }
 }
 
 void rotateImage(Node *tC)
@@ -106,7 +136,6 @@ void rotateImage(Node *tC)
     ImageRotateCCW(&tC->imageCard);
     tC->textureCard = LoadTextureFromImage(tC->imageCard);
 }
-
 
 void drawTable(Stack *P, Stack *eI)
 {
@@ -186,6 +215,50 @@ void displayPDeck(Stack *P, Stack *eI)
                 ac = 15;
 
             DrawTexture(focusNodeP->textureCard, ac, 480, WHITE);
+            DrawTexture(focusEI->textureCard, ac, 220, WHITE);
+        }
+
+        ac += 160;
+
+        focusNodeP = focusNodeP->next;
+
+        i++;
+
+    }
+}
+
+void displayBackCards(Stack *P, Stack *eI)
+{
+    drawTable(P, eI);
+
+    Node *focusNodeP = P->head;
+
+    int i = 0;
+    int ac = 15;
+
+    Node *focusEI = eI->head;
+    focusEI = focusEI->next;
+
+    Node *focusBP = eI->head;
+
+    for(i = 0 ; i < 7 ; i++)
+        focusBP = focusBP->next;
+
+    i = 0;
+
+    while(focusNodeP != NULL)
+    {
+        if(i < 10)
+        {
+            DrawTexture(focusBP->textureCard, ac, 690, WHITE);
+            DrawTexture(focusEI->textureCard, ac, 10, WHITE);
+        }
+        else
+        {
+            if(i == 10)
+                ac = 15;
+
+            DrawTexture(focusBP->textureCard, ac, 480, WHITE);
             DrawTexture(focusEI->textureCard, ac, 220, WHITE);
         }
 
@@ -403,7 +476,9 @@ int selectCard(Stack *D, Node *nT, Node *nT2, Stack *P1, Stack *P2)
         focusNode = focusNode->next;
     }
 
-    if(i >= 1 && IsKeyPressed(KEY_Q))
+    if(IsKeyPressed(KEY_SPACE))
+        return 0;
+    else if(i >= 1 && IsKeyPressed(KEY_Q))
         return 1;
     else if(i >= 2 && IsKeyPressed(KEY_W))
         return 2;
@@ -431,7 +506,6 @@ int selectCard(Stack *D, Node *nT, Node *nT2, Stack *P1, Stack *P2)
         return 13;
     else if(WindowShouldClose())
         return 14;
-
     else
         return 0;
 }
@@ -452,14 +526,21 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
         int c = 0;
         int i = 0;
 
-        if (IsKeyPressed(KEY_SPACE))
+        if(IsKeyPressed(KEY_SPACE))
             neXt = 15;
-        c = selectCard(D, nT, nT2, P1, P2);
 
+        if(nT == NULL || nT2 == NULL)
+            c = selectCard(D, nT, nT2, P1, P2);
 
         if(D->t == 0)
         {
-            if(nT == NULL)
+            if(nT != NULL && nT2 != NULL)
+            {
+                displayBackCards(P1, eI);
+                displayDeckCard(tC);
+                displaySelect(nT, nT2);
+            }
+            else if(nT == NULL)
             {
                 displayPDeck(P1, eI);
                 displayDeckCard(tC);
@@ -487,8 +568,7 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
                     neXt = 0;
                 }
             }
-
-            if(nT != NULL)
+            else if(nT != NULL)
             {
                 displayPDeck(P2, eI);
                 displayDeckCard(tC);
@@ -523,7 +603,13 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
         }
         else if(D->t == 1)
         {
-            if(nT2 == NULL)
+            if(nT != NULL && nT2 != NULL)
+            {
+                displayBackCards(P1, eI);
+                displayDeckCard(tC);
+                displaySelect(nT, nT2);
+            }
+            else if(nT2 == NULL)
             {
                 displayPDeck(P2, eI);
                 displayDeckCard(tC);
@@ -551,8 +637,7 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
                     neXt = 0;
                 }
             }
-
-            if(nT2 != NULL)
+            else if(nT2 != NULL)
             {
                 displayPDeck(P1, eI);
                 displayDeckCard(tC);
@@ -583,7 +668,7 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
             }
         }
 
-        if(nT != NULL && nT2 != NULL )
+        if(nT != NULL && nT2 != NULL && neXt == 15)
         {
             tC = pop(D);
             rotateImage(tC);
@@ -757,7 +842,7 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI)
     int end = 0;
     int neXt = 0;
 
-    while(peek(P1R2) != NULL && peek(P2R2) != NULL)
+    while(end < 13)
     {
 
         BeginDrawing();
@@ -768,13 +853,19 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI)
 
 
         if(IsKeyPressed(KEY_SPACE))
-            neXt =  15;
+            neXt = 15;
 
-        c=selectCard(D, nT, nT2, P1R2, P1R2);
+        if(nT == NULL || nT2 == NULL)
+            c = selectCard(D, nT, nT2, P1R2, P2R2);
 
         if(D->t == 0)
         {
-            if(nT == NULL)
+            if(nT != NULL && nT2 != NULL)
+            {
+                displayBackCards(P1R2, eI);
+                displaySelect(nT, nT2);
+            }
+            else if(nT == NULL)
             {
                 displayPDeck(P1R2, eI);
 
@@ -796,12 +887,10 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI)
                     r = pop(temp);
                     push(P1R2, r);
                 }
-
                 c = 0;
                 neXt = 0;
             }
-
-            if(nT != NULL)
+           else if(nT != NULL)
             {
                 displayPDeck(P2R2, eI);
                 displaySelect(nT, nT2);
@@ -832,7 +921,12 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI)
         }
         else if(D->t == 1)
         {
-            if(nT2 == NULL)
+            if(nT != NULL && nT2 != NULL)
+            {
+                displayBackCards(P1R2, eI);
+                displaySelect(nT, nT2);
+            }
+            else if(nT2 == NULL)
             {
                 displayPDeck(P2R2, eI);
 
@@ -860,8 +954,7 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI)
                     neXt = 0;
                 }
             }
-
-            if(nT2 != NULL)
+            else if(nT2 != NULL)
             {
                 displayPDeck(P1R2, eI);
                 displaySelect(nT,nT2);
@@ -891,7 +984,7 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI)
             }
         }
 
-        if(nT != NULL && nT2 != NULL )
+        if(nT != NULL && nT2 != NULL && neXt == 15)
         {
             //CONDICIONES GOBLIN Y KNIGHT
             if(D->t == 1 && nT->type == 'K' && nT2->type == 'G')
@@ -959,7 +1052,6 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI)
                 }
             }
                 //COMPARACIONES DE DIFERENTE CLASE CON DUPPLEGANGER
-                //////
             else if(D->t == 0 && nT->type == 'D')
             {
                 if(nT2->type != 'D')
@@ -1061,26 +1153,8 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI)
             neXt = 0;
         }
         EndDrawing();
-
     }
-
-
-
 }
-/*
-void displayD(Stack * D)
-{
-    Node *focusNode = D->head;
-    int i = 1;
-    while(focusNode != NULL)
-    {
-        printf("#%d Type: %c with level: %d\n", i, focusNode->type, focusNode->level);
-        focusNode = focusNode->next;
-        i++;
-    }
-    printf("\n\n");
-}
-*/
 
 int claimWinner(Stack *V1, Stack *V2, Stack *eI)
 {
@@ -1317,38 +1391,16 @@ int claimWinner(Stack *V1, Stack *V2, Stack *eI)
     }
     else if(P1TK == P2TK)
     {
-        //printf("Empate\n");
-
         if(P1KMax > P2KMax)
-        {
-            //printf("El Jugador 1 Tiene el voto del Knight mas alto, por lo que se lleva el voto de los Knights\n");
             VT1++;
-        }
         else if(P2KMax > P1KMax)
-        {
-            //printf("El Jugador 2 Tiene el voto del Knight mas alto, por lo que se lleva el voto de los Knights\n");
             VT2++;
-        }
     }
 
     //decision de GANADOR FINAL
 
     if(VT1 > VT2)
-    {
         return 1;
-        /*
-        Winner(eI);
-        DrawText("P1 HA GANADO EL JUEGO", 303, 560, 80, WHITE);
-        DrawText("P1 HA GANADO EL JUEGO", 300, 560, 80, PINK);
-         */
-    }
     else if(VT2 > VT1)
-    {
-        return 0;
-        /*
-        Winner(eI);
-        DrawText("P2 HA GANADO EL JUEGO", 303, 560, 80, WHITE);
-        DrawText("P2 HA GANADO EL JUEGO", 300, 560, 80, BLUE);
-         */
-    }
+        return 2;
 }

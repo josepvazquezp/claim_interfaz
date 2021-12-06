@@ -15,6 +15,7 @@ int main(void)
     int nextround = 0;
     int winner = 0;
     int WResult = 0;
+    int rules = 0;
 
 
     Stack *V1;
@@ -29,6 +30,7 @@ int main(void)
     InitWindow(screenWidth, screenHeight, "CLAIM");
 
     SetTargetFPS(60);
+
     while(!WindowShouldClose())    // Detect window close button or ESC key
     {
         if(shuffleR == 1)
@@ -50,9 +52,23 @@ int main(void)
         if(start == 1)
             drawStart();
 
+        if(rules == 1)
+            displayRules(eI);
 
-        if(GetKeyPressed() == KEY_ENTER)
+        if(IsKeyPressed(KEY_ENTER))
             start = 0;
+
+        if(start == 1 && IsKeyPressed(KEY_LEFT_SHIFT))
+        {
+            rules = 1;
+            start = 2;
+        }
+
+        if(start == 2 && IsKeyPressed(KEY_M))
+        {
+            rules = 0;
+            start = 1;
+        }
 
         if(start == 0)
         {
@@ -76,32 +92,19 @@ int main(void)
                 round2(D, V1, V2, P1R2, P2R2, eI);
                 winner = 1;
                 r2 = 0;
-                while (peek(P1R2) != NULL )
+
+                while(peek(P1R2) != NULL )
                     pop(P1R2);
-                while (peek(P2R2) != NULL )
+                while(peek(P2R2) != NULL )
                     pop(P2R2);
+
                 WResult = claimWinner(V1, V2, eI);
                 ClearBackground(BLACK);
-
-
-
             }
 
-            if(WResult == 1 )
-            {
-                Winner(eI);
-                DrawText("P1 HA GANADO EL JUEGO", 303, 560, 80, WHITE);
-                DrawText("P1 HA GANADO EL JUEGO", 300, 560, 80, PINK);
+            if(WResult != 0)
+                Winner(eI, WResult);
 
-            }
-
-            else if (WResult == 2)
-            {
-                Winner(eI);
-                DrawText("P2 HA GANADO EL JUEGO", 303, 560, 80, WHITE);
-                DrawText("P2 HA GANADO EL JUEGO", 300, 560, 80, BLUE);
-
-            }
         }
 
         EndDrawing();
