@@ -481,12 +481,12 @@ Stack *newPlayer(Stack *D)
 
 int selectCard(Stack *D, Node *nT, Node *nT2, Stack *P1, Stack *P2)
 {
-    int i = 1;
+    int i = 0;
     Node *focusNode = NULL;
 
-    if(nT != NULL)
+    if(nT == NULL && nT2 != NULL)
         focusNode = P1->head;
-    else if(nT2 != NULL)
+    else if(nT2 == NULL && nT != NULL)
         focusNode = P2->head;
     else if(nT == NULL && nT2 == NULL)
     {
@@ -563,7 +563,7 @@ int craig(Stack *D, Stack *P2, Node *nT)
     int cK = 0;
     int min = 0;
 
-    if(deck != NULL) //round1 (itsGoTimeBBY)
+    if(peek(D) != NULL) //round1 (itsGoTimeBBY)
     {
         if(D->t == 0) //responde craig
         {
@@ -584,20 +584,20 @@ int craig(Stack *D, Stack *P2, Node *nT)
                             cT = i;
                         }
                     }
-                    else if(focusNode->type == 'D')
+                    else if(focusNode->type == 'D') // guardar dopplegangers
                     {
                         if(tempD == NULL)
                         {
                             tempD = craigOption(temp, focusNode);
                             cD = i;
                         }
-                        else if(tempD->level < focusNode->level)
+                        else if(tempD->level <= focusNode->level)
                         {
                             tempD = craigOption(temp, focusNode);
                             cD = i;
                         }
                     }
-                    else if(focusNode->type == 'K')
+                    else if(focusNode->type == 'K') // guardar knight
                     {
                         if(tempK == NULL)
                         {
@@ -610,7 +610,7 @@ int craig(Stack *D, Stack *P2, Node *nT)
                             cK = i;
                         }
                     }
-                    else
+                    else //guardar min
                     {
                         if(tempM == NULL)
                         {
@@ -637,7 +637,7 @@ int craig(Stack *D, Stack *P2, Node *nT)
                         cT = i;
                     }
                 }
-                else
+                else //guardar min
                 {
                     if(tempM == NULL)
                     {
@@ -657,7 +657,8 @@ int craig(Stack *D, Stack *P2, Node *nT)
 
             if(i == 1) //ultima carta
                 return 1;
-            else if(cT != 0) //checar si hay carta del mismo tipo
+
+            if(cT != 0) //checar si hay carta del mismo tipo
                 return cT;
             else if(cK != 0 && nT->type == 'G') //caso de no tener Goblin checar si hay knight para matar Goblin
                 return cK;
@@ -744,7 +745,7 @@ int craig(Stack *D, Stack *P2, Node *nT)
                         tempD = craigOption(temp, focusNode);
                         cD = i;
                     }
-                    else if(tempD->level < focusNode->level)
+                    else if(tempD->level <= focusNode->level)
                     {
                         tempD = craigOption(temp, focusNode);
                         cD = i;
@@ -782,7 +783,8 @@ int craig(Stack *D, Stack *P2, Node *nT)
 
             if(i == 1) //ultima carta
                 return 1;
-            else if(cE != 0)
+
+            if(cE != 0)
                 return cE;
             else if(cT != 0) //checar si hay carta del mismo tipo
                 return cT;
@@ -906,7 +908,6 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
                     }
 
                     nT2 = pop(temp);
-
 
                     displaySelect(nT, nT2);
 
@@ -1199,29 +1200,35 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI, 
                 DrawText("P1", 1455, 560, 80, WHITE);
                 DrawText("P1", 1453, 560, 80, PINK);
 
-                for(i = 0; i < c; i++)
+                if(c != 0)
                 {
-                    r = pop(P1R2);
-                    push(temp, r);
-                }
+                    for(i = 0; i < c; i++)
+                    {
+                        r = pop(P1R2);
+                        push(temp, r);
+                    }
 
-                nT = pop(temp);
-                displaySelect(nT,nT2);
-                P1R2->cN--;
+                    nT = pop(temp);
+                    displaySelect(nT, nT2);
+                    P1R2->cN--;
 
-                while(peek(temp) != NULL)
-                {
-                    r = pop(temp);
-                    push(P1R2, r);
+                    while(peek(temp) != NULL)
+                    {
+                        r = pop(temp);
+                        push(P1R2, r);
+                    }
+
+                    c = 0;
+                    neXt = 0;
                 }
-                c = 0;
-                neXt = 0;
             }
-           else if(nT != NULL)
+            else if(nT != NULL)
             {
+                displayPDeck(P2R2, eI);
+                displaySelect(nT, nT2);
+
                 if(AI == 0)
                 {
-                    displayPDeck(P2R2, eI);
                     DrawText("P2", 1455, 560, 80, WHITE);
                     DrawText("P2", 1453, 560, 80, BLUE);
                 }
@@ -1259,10 +1266,7 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI, 
             }
             else if(nT2 == NULL)
             {
-                if(AI == 0)
-                    displayPDeck(P2R2, eI);
-
-                displaySelect(nT, nT2);
+                displayPDeck(P2R2, eI);
 
                 if(AI == 0)
                 {
