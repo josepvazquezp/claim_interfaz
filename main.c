@@ -16,7 +16,8 @@ int main(void)
     int winner = 0;
     int WResult = 0;
     int rules = 0;
-
+    int AI = 0;
+    int mode = 0;
 
     Stack *V1;
     Stack *V2;
@@ -37,11 +38,11 @@ int main(void)
         {
             V1 = newStack();
             V2 = newStack();
-            D = newDeck();
+            D = newDeck();//loadDeck(D);//
             P1R2 = newStack();
             P2R2 = newStack();
-            P1 = newPlayer(D);
-            P2 = newPlayer(D);
+            P1 = newPlayer(D);//loadP1(P1);//
+            P2 = newPlayer(D);//loadP2(P2);//
             eI = extraImages();
 
             shuffleR = 0;
@@ -55,8 +56,14 @@ int main(void)
         if(rules == 1)
             displayRules(eI);
 
+        if(mode == 1)
+            drawMode(eI);
+
         if(IsKeyPressed(KEY_ENTER))
+        {
             start = 0;
+            mode = 1;
+        }
 
         if(start == 1 && IsKeyPressed(KEY_LEFT_SHIFT))
         {
@@ -70,11 +77,22 @@ int main(void)
             start = 1;
         }
 
-        if(start == 0)
+        if(mode == 1)
+        {
+            if(IsKeyPressed(KEY_C))
+            {
+                mode = 0;
+                AI = 1;
+            }
+            else if(IsKeyPressed(KEY_V))
+                mode = 0;
+        }
+
+        if(start == 0 && mode == 0)
         {
             if(peek(D) != NULL)
             {
-                itsGoTimeBBY(D, V1, V2, P1, P2, P1R2, P2R2, eI);
+                itsGoTimeBBY(D, V1, V2, P1, P2, P1R2, P2R2, eI, AI);
                 nextround = 1;
             }
 
@@ -89,7 +107,7 @@ int main(void)
 
             if(peek(P1R2) != NULL && peek(P2R2) != NULL && r2 >= 50 && winner == 0)
             {
-                round2(D, V1, V2, P1R2, P2R2, eI);
+                round2(D, V1, V2, P1R2, P2R2, eI, AI);
                 winner = 1;
                 r2 = 0;
 

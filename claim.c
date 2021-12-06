@@ -11,6 +11,14 @@ Stack *extraImages()
     Stack *n = newStack();
     Node *tempNode = malloc(sizeof(Node));
 
+    //cargar gameMode
+    tempNode->type = 'G';
+    tempNode->level = 7;
+    tempNode->imageCard = LoadImage("cards/game_mode.png");
+    tempNode->textureCard = LoadTextureFromImage(tempNode->imageCard);
+    push(n, tempNode);
+    n->cN++;
+
     //cargar backCard180
     tempNode->type = 'B';
     tempNode->level = 6;
@@ -88,6 +96,16 @@ void drawStart()
     DrawText("Press enter to START", 450, 600, 60, textStart);
     DrawText("Press shift for RULES", 565, 673, 40, YELLOW);
 
+}
+
+void drawMode(Stack *eI)
+{
+    Node *focusNode = eI->head;
+
+    for(int i = 0 ; i < 8 ; i++)
+        focusNode = focusNode->next;
+
+    DrawTexture(focusNode->textureCard, 0, 0, WHITE);
 }
 
 void drawRound2(Stack *eI)
@@ -314,6 +332,164 @@ void unloadsExtraImages(Stack *eI)
         focusNode = focusNode->next;
     }
 }
+/*
+void saveGame(Stack *D, Stack *P1, Stack *P2, Stack *P1R2, Stack *P2R2, Stack *V1, Stack *V2)
+{
+    /*Color sText= {5, 211, 102, 255};
+    DrawRectangle(400, 300, 1000, 150, BLACK);
+    DrawText("Saving Data ...", 843, 420, 60, WHITE);
+    DrawText("Saving Data ...", 840, 420, 60, sText);
+
+    //guardar deck
+    if(peek(D) != NULL)
+    {
+        FILE *saveD = fopen("save_data/deck.dat", "w+b");
+
+        if(saveD)
+        {
+            fwrite(D, sizeof(Stack), 1, saveD);
+
+            Node *focusNode = D->head;
+
+            while(focusNode != NULL)
+            {
+                fwrite(focusNode, sizeof(Node), 1, saveD);
+                /*fwrite(focusNode->imageCard, sizeof(Image), 1, saveD);
+                fwrite(focusNode->textureCard, sizeof(Texture2D), 1, saveD);
+                focusNode = focusNode->next;
+            }
+
+            fclose(saveD);
+        }
+    }
+
+    //guardar P1
+    if(peek(P1) != NULL)
+    {
+        FILE *saveP1 = fopen("save_data/p1.dat", "w+b");
+
+        if(saveP1)
+            fwrite(P1, sizeof(Stack), 1, saveP1);
+
+        fclose(saveP1);
+    }
+
+    //guardar P2
+    if(peek(P2) != NULL)
+    {
+        FILE *saveP2 = fopen("save_data/p2.dat", "w+b");
+
+        if(saveP2)
+            fwrite(P2, sizeof(Stack), 1, saveP2);
+
+        fclose(saveP2);
+    }
+
+    //guardar P1R2
+    if(peek(P1R2) != NULL)
+    {
+        FILE *saveP1R2 = fopen("save_data/p1_r2.dat", "w+b");
+
+        if(saveP1R2)
+            fwrite(P1R2, sizeof(Stack), 1, saveP1R2);
+
+        fclose(saveP1R2);
+    }
+
+    //guardar P2R2
+    if(peek(P2R2) != NULL)
+    {
+        FILE *saveP2R2 = fopen("save_data/p2_r2.dat", "w+b");
+
+        if(saveP2R2)
+            fwrite(P2R2, sizeof(Stack), 1, saveP2R2);
+
+        fclose(saveP2R2);
+    }
+
+    //guardar V1
+    if(peek(V1) != NULL)
+    {
+        FILE *saveV1 = fopen("save_data/v1.dat", "w+b");
+
+        if(saveV1)
+            fwrite(V1, sizeof(Stack), 1, saveV1);
+
+        fclose(saveV1);
+    }
+
+    //guardar V2
+    if(peek(V2) != NULL)
+    {
+        FILE *saveV2 = fopen("save_data/v2.dat", "w+b");
+
+        if(saveV2)
+            fwrite(V2, sizeof(Stack), 1, saveV2);
+
+        fclose(saveV2);
+    }
+
+    Color sText= {5, 211, 102, 255};
+    DrawRectangle(400, 300, 1000, 150, BLACK);
+    DrawText("Saving Data ...", 843, 420, 60, WHITE);
+    DrawText("Saving Data ...", 840, 420, 60, sText);
+
+}
+
+Stack *loadDeck(Stack *D)
+{
+    FILE *save = fopen("deck.dat", "r+b");
+
+    if(save != NULL)
+    {
+        D = newStack();
+        fread(D, sizeof(Stack), 1, save);
+
+        D->head = malloc(sizeof(Node));
+
+        Node *focusNode = D->head;
+
+        while(focusNode != NULL)
+        {
+            fread(focusNode, sizeof(Node), 1, save);
+            focusNode = focusNode->next;
+        }
+
+        fclose(save);
+    }
+    /*else
+        D = newDeck();
+
+    return D;
+}
+
+Stack *loadP1(Stack *P1)
+{
+    FILE *save = fopen("p1.dat", "r+b");
+
+    if(save != NULL)
+    {
+        P1 = newStack();
+        fread(P1, sizeof(Stack), 1, save);
+        fclose(save);
+    }
+
+    return P1;
+}
+
+Stack *loadP2(Stack *P2)
+{
+    FILE *save = fopen("p2.dat", "r+b");
+
+    if(save != NULL)
+    {
+        P2 = newStack();
+        fread(P2, sizeof(Stack), 1, save);
+        fclose(save);
+    }
+
+    return P2;
+}*/
 
 Stack *encapsulation(char temp[52][2])
 {
@@ -510,7 +686,194 @@ int selectCard(Stack *D, Node *nT, Node *nT2, Stack *P1, Stack *P2)
         return 0;
 }
 
-void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P1R2, Stack *P2R2, Stack *eI)
+Node *craigOption(Node *temp, Node *focusNode)
+{
+    temp = malloc(sizeof(Node));
+
+    temp->type = focusNode->type;
+    temp->level = focusNode->level;
+    temp->imageCard = focusNode->imageCard;
+    temp->textureCard = focusNode->textureCard;
+
+    return temp;
+}
+
+int craig(Stack *D, Stack *P2, Node *nT)
+{
+    Node *focusNode = P2->head;
+    Node *deck = peek(D);
+    Node *temp = malloc(sizeof(Node));
+    Node *tempT = NULL;
+    Node *tempD = NULL;
+    Node *tempK = NULL;
+    Node *tempM = NULL;
+    int i = 1;
+    int cT = 0;
+    int cD = 0;
+    int cK = 0;
+    int min = 0;
+
+    if(deck != NULL) //round1 (itsGoTimeBBY)
+    {
+        if(D->t == 0) //responde craig
+        {
+            while(focusNode != NULL)
+            {
+                if((deck->type != 'E' && deck->level >= 6) || (deck->type == 'E' && deck->level <= 5)) // considerar la del deck apropiada para round2
+                {
+                    if(nT->type == focusNode->type) //guardar valor más alto de ese tipo
+                    {
+                        if(tempT == NULL)
+                        {
+                            tempT = craigOption(temp, focusNode);
+                            cT = i;
+                        }
+                        else if(tempT->level < focusNode->level)
+                        {
+                            tempT = craigOption(temp, focusNode);
+                            cT = i;
+                        }
+                    }
+                    else if(focusNode->type == 'D')
+                    {
+                        if(tempD == NULL)
+                        {
+                            tempD = craigOption(temp, focusNode);
+                            cD = i;
+                        }
+                        else if(tempD->level < focusNode->level)
+                        {
+                            tempD = craigOption(temp, focusNode);
+                            cD = i;
+                        }
+                    }
+                    else if(focusNode->type == 'K')
+                    {
+                        if(tempK == NULL)
+                        {
+                            tempK = craigOption(temp, focusNode);
+                            cK = i;
+                        }
+                        else if(tempK->level < focusNode->level)
+                        {
+                            tempK = craigOption(temp, focusNode);
+                            cK = i;
+                        }
+                    }
+                    else
+                    {
+                        if(tempM == NULL)
+                        {
+                            tempM = craigOption(temp, focusNode);
+                            min = i;
+                        }
+                        else if(tempM->level > focusNode->level)
+                        {
+                            tempM = craigOption(temp, focusNode);
+                            min = i;
+                        }
+                    }
+                }
+                else if(nT->type == focusNode->type) //guardar valor más alto de ese tipo
+                {
+                    if(tempT == NULL)
+                    {
+                        tempT = craigOption(temp, focusNode);
+                        cT = i;
+                    }
+                    else if(tempT->level < focusNode->level)
+                    {
+                        tempT = craigOption(temp, focusNode);
+                        cT = i;
+                    }
+                }
+                else
+                {
+                    if(tempM == NULL)
+                    {
+                        tempM = craigOption(temp, focusNode);
+                        min = i;
+                    }
+                    else if(tempM->level > focusNode->level)
+                    {
+                        tempM = craigOption(temp, focusNode);
+                        min = i;
+                    }
+                }
+
+                i++;
+                focusNode = focusNode->next;
+            }
+
+            if(i == 1) //ultima carta
+                return 1;
+            if(cT != 0) //checar si hay carta del mismo tipo
+                return cT;
+            else if(cK != 0 && nT->type == 'G') //caso de no tener Goblin checar si hay knight para matar Goblin
+                return cK;
+            else if(cD != 0 && nT->level < tempD->level) // caso de no tener del mismo tipo checar si hay Doppleganger
+                return cD;
+            else // caso de no tener del mismo tipo y no tener Doppleganger
+                return min;
+        }
+        else if(D->t == 1) // empieza craig
+        {
+            while(focusNode != NULL)
+            {
+                if((deck->type != 'E' && deck->level >= 6) || (deck->type == 'E' && deck->level <= 5)) // considerar la del deck apropiada para round2
+                {
+                    if(tempT == NULL)
+                    {
+                        tempT = craigOption(temp, focusNode);
+                        cT = i;
+                    }
+                    else if(tempT->level < focusNode->level)
+                    {
+                        tempT = craigOption(temp, focusNode);
+                        cT = i;
+                    }
+                }
+                else
+                {
+                    if(tempM == NULL)
+                    {
+                        tempM = craigOption(temp, focusNode);
+                        min = i;
+                    }
+                    else if(tempM->level > focusNode->level)
+                    {
+                        tempM = craigOption(temp, focusNode);
+                        min = i;
+                    }
+                }
+
+                i++;
+                focusNode = focusNode->next;
+            }
+
+            if(i == 1) //caso de ultima carta
+                return 1;
+
+            if(cT != 0) //si hay del mismo tipo
+                return cT;
+            else
+                return min;
+        }
+    }
+    else // round2
+    {
+        if(D->t == 0) // responde craig
+        {
+
+        }
+        else if(D->t == 1) // empieza craig
+        {
+
+        }
+    }
+}
+
+void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P1R2, Stack *P2R2, Stack *eI, int AI)
 {
     Stack *temp = newStack();
     Node *tC;
@@ -577,6 +940,9 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
                 DrawText("P2", 1455, 560, 80, WHITE);
                 DrawText("P2", 1453, 560, 80, BLUE);
 
+                if(AI == 1)
+                    c = craig(D, P2, nT);
+
                 if(c != 0)
                 {
                     for(i = 0; i < c; i++)
@@ -616,6 +982,9 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
 
                 DrawText("P2", 1455, 560, 80, WHITE);
                 DrawText("P2", 1453, 560, 80, BLUE);
+
+                if(AI == 1)
+                    c = craig(D, P2, nT);
 
                 if(c != 0)
                 {
@@ -667,6 +1036,9 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
                 }
             }
         }
+
+        /*if(IsKeyPressed(KEY_V))
+            saveGame(D, P1, P2, P1R2, P2R2, V1, V2);*/
 
         if(nT != NULL && nT2 != NULL && neXt == 15)
         {
@@ -833,7 +1205,7 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
 
 }
 
-void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI)
+void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI, int AI)
 {
 
     Stack *temp = newStack();
@@ -844,7 +1216,6 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI)
 
     while(end < 13)
     {
-
         BeginDrawing();
 
         Node *r = NULL;
@@ -898,6 +1269,9 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI)
                 DrawText("P2", 1455, 560, 80, WHITE);
                 DrawText("P2", 1453, 560, 80, BLUE);
 
+                if(AI == 1)
+                    c = craig(D, P2R2, nT);
+
                 if(c != 0)
                 {
                     for(i = 0; i < c; i++)
@@ -932,6 +1306,9 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI)
 
                 DrawText("P2", 1455, 560, 80, WHITE);
                 DrawText("P2", 1453, 560, 80, BLUE);
+
+                if(AI == 1)
+                    c = craig(D, P2R2, nT);
 
                 if(c != 0)
                 {
