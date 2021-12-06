@@ -121,7 +121,7 @@ int main(void)
             }
 
             if(WResult != 0)
-                Winner(eI, WResult);
+                Winner(eI, WResult, AI);
 
         }
 

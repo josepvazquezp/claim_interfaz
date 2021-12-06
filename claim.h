@@ -44,7 +44,7 @@ void displayDeckCard(Node *tC);
 void displayPDeck(Stack *P, Stack *eI);
 void displaySelect(Node *nT, Node *nT2);
 void drawRound2(Stack *eI);
-void Winner(Stack *eI, int w);
+void Winner(Stack *eI, int w, int AI);
 void displayRules(Stack *eI);
 
 #endif

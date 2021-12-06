@@ -128,7 +128,7 @@ void displayRules(Stack *eI)
     DrawTexture(focusNode->textureCard, 0 , 0, WHITE );
 }
 
-void Winner(Stack *eI, int w)
+void Winner(Stack *eI, int w, int AI)
 {
     Node *focusNode = eI->head;
 
@@ -139,13 +139,21 @@ void Winner(Stack *eI, int w)
 
     if(w == 1)
     {
-        DrawText("P1 HA GANADO EL JUEGO", 273, 560, 80, WHITE);
-        DrawText("P1 HA GANADO EL JUEGO", 270, 560, 80, PINK);
+        DrawText("P1", 678, 460, 150, WHITE);
+        DrawText("P1", 675, 460, 150, PINK);
     }
     else if(w == 2)
     {
-        DrawText("P2 HA GANADO EL JUEGO", 273, 560, 80, WHITE);
-        DrawText("P2 HA GANADO EL JUEGO", 270, 560, 80, BLUE);
+        if(AI == 1)
+        {
+            DrawText("CPU", 598, 460, 150, WHITE);
+            DrawText("CPU", 595, 460, 150, PURPLE);
+        }
+        else
+        {
+            DrawText("P2", 657, 460, 150, WHITE);
+            DrawText("P2", 654, 460, 150, BLUE);
+        }
     }
 }
 
@@ -807,6 +815,7 @@ int craig(Stack *D, Stack *P2, Node *nT)
 
             if(i == 1) //ultima carta
                 return 1;
+
             if(cT != 0) //checar si hay carta del mismo tipo
                 return cT;
             else if(cK != 0 && nT->type == 'G') //caso de no tener Goblin checar si hay knight para matar Goblin
@@ -862,13 +871,113 @@ int craig(Stack *D, Stack *P2, Node *nT)
     }
     else // round2
     {
+        Node *tempE = NULL;
+        int cE = 0;
+
         if(D->t == 0) // responde craig
         {
+            while(focusNode != NULL)
+            {
+                if(nT->type == focusNode->type) //guardar valor más alto de ese tipo
+                {
+                    if(tempT == NULL)
+                    {
+                        tempT = craigOption(temp, focusNode);
+                        cT = i;
+                    }
+                    else if(nT->type == 'E' && nT->level > focusNode->level)
+                    {
+                        tempE = craigOption(temp, focusNode);
+                        cE = i;
+                    }
+                    else if(tempT->level < focusNode->level)
+                    {
+                        tempT = craigOption(temp, focusNode);
+                        cT = i;
+                    }
+                }
+                else if(focusNode->type == 'D')
+                {
+                    if(tempD == NULL)
+                    {
+                        tempD = craigOption(temp, focusNode);
+                        cD = i;
+                    }
+                    else if(tempD->level < focusNode->level)
+                    {
+                        tempD = craigOption(temp, focusNode);
+                        cD = i;
+                    }
+                }
+                else if(focusNode->type == 'K')
+                {
+                    if(tempK == NULL)
+                    {
+                        tempK = craigOption(temp, focusNode);
+                        cK = i;
+                    }
+                    else if (tempK->level < focusNode->level){
+                        tempK = craigOption(temp, focusNode);
+                        cK = i;
+                    }
+                }
+                else
+                {
+                    if(tempM == NULL)
+                    {
+                        tempM = craigOption(temp, focusNode);
+                        min = i;
+                    }
+                    else if(tempM->level > focusNode->level)
+                    {
+                        tempM = craigOption(temp, focusNode);
+                        min = i;
+                    }
+                }
+
+                i++;
+                focusNode = focusNode->next;
+            }
+
+            if(i == 1) //ultima carta
+                return 1;
+
+            if(cE != 0)
+                return cE;
+            else if(cT != 0) //checar si hay carta del mismo tipo
+                return cT;
+            else if(cK != 0 && nT->type == 'G') //caso de no tener Goblin checar si hay knight para matar Goblin
+                return cK;
+            else if(cD != 0 && nT->level < tempD->level) // caso de no tener del mismo tipo checar si hay Doppleganger
+                return cD;
+            else // caso de no tener del mismo tipo y no tener Doppleganger
+                return min;
 
         }
         else if(D->t == 1) // empieza craig
         {
+            while(focusNode != NULL)
+            {
+                if(tempT == NULL)
+                {
+                    tempT = craigOption(temp, focusNode);
+                    cT = i;
+                }
+                else if(tempT->level < focusNode->level)
+                {
+                    tempT = craigOption(temp, focusNode);
+                    cT = i;
+                }
 
+                i++;
+                focusNode = focusNode->next;
+            }
+
+            if(i == 1) //caso de ultima carta
+                return 1;
+
+            else if(cT != 0) //si hay del mismo tipo
+                return cT;
         }
     }
 }
