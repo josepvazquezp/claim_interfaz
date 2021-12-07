@@ -4,7 +4,7 @@
 #include "stack.h"
 #include "claim.h"
 
-Stack* newStack()
+Stack* newStack() // creacion de nuevo Stack
 {
     Stack *s = malloc(sizeof(Stack));
     s->head = NULL;
@@ -13,35 +13,23 @@ Stack* newStack()
     return s;
 }
 
-// Node* newNode(Node *data)
-// {
-//   Node* n = malloc(sizeof(Node));
-
-//   n->level = data->level;
-//   n->type = data->type;
-//   n->next = NULL;
-
-//   return n;
-// }
-
-void push(Stack* s, Node* data)
+void push(Stack* s, Node* data) // añadir nodo parte por parte de la estructura de claim
 {
-    if(s->head == NULL)
+    if(s->head == NULL) // caso del primer elemento
     {
         s->head = malloc(sizeof(Node));
         s->head->level = data->level;
         s->head->type = data->type;
-        //strcpy(s->head->card, data->card);
         s->head->imageCard = data->imageCard;
         s->head->textureCard = data->textureCard;
         s->head->next = NULL;
         return;
     }
 
+    // caso de un nuevo nodo
     Node* n = malloc(sizeof(Node));
     n->level = data->level;
     n->type = data->type;
-    //strcpy(n->card, data->card);
     n->imageCard = data->imageCard;
     n->textureCard = data->textureCard;
     n->next = s->head;
@@ -49,16 +37,16 @@ void push(Stack* s, Node* data)
 
 }
 
-void* pop(Stack* s)
+void* pop(Stack* s) // quitar nodo y obtener dicho valor
 {
-    if(s->head == NULL)
+    if(s->head == NULL) // caso en tener un Stack vacio
         return NULL;
 
+    // eliminacion del nodo
     Node* toDel = s->head;
     Node* toRet = malloc(sizeof(Node));
     toRet->level = s->head->level;
     toRet->type = s->head->type;
-    //strcpy(toRet->card, s->head->card);
     toRet->imageCard = s->head->imageCard;
     toRet->textureCard = s->head->textureCard;
     s->head = s->head->next;
@@ -67,7 +55,7 @@ void* pop(Stack* s)
     return toRet;
 }
 
-void* peek(Stack* s)
+void* peek(Stack* s) // obtener el ultimo valor del Stack sin quitarlo
 {
     if(s->head == NULL)
         return NULL;
