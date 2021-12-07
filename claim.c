@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include <string.h>
 #include "claim.h"
 #include "stack.h"
 #include "raylib.h"
@@ -11,7 +10,7 @@ Stack *extraImages()
     Stack *n = newStack();
     Node *tempNode = malloc(sizeof(Node));
 
-    //cargar gameMode
+    // cargar gameMode
     tempNode->type = 'G';
     tempNode->level = 7;
     tempNode->imageCard = LoadImage("cards/game_mode.png");
@@ -19,7 +18,7 @@ Stack *extraImages()
     push(n, tempNode);
     n->cN++;
 
-    //cargar backCard180
+    // cargar backCard180
     tempNode->type = 'B';
     tempNode->level = 6;
     tempNode->imageCard = LoadImage("cards/back.png");
@@ -27,7 +26,7 @@ Stack *extraImages()
     push(n, tempNode);
     n->cN++;
 
-    //cargar Rules
+    // cargar Rules
     tempNode->type = 'R';
     tempNode->level = 5;
     tempNode->imageCard = LoadImage("cards/rules.png");
@@ -35,7 +34,7 @@ Stack *extraImages()
     push(n, tempNode);
     n->cN++;
 
-    //cargar Winner
+    // cargar Winner
     tempNode->type = 'W';
     tempNode->level = 4;
     tempNode->imageCard = LoadImage("cards/Winner.png");
@@ -43,7 +42,7 @@ Stack *extraImages()
     push(n, tempNode);
     n->cN++;
 
-    //cargar round2
+    // cargar round2
     tempNode->type = 'R';
     tempNode->level = 3;
     tempNode->imageCard = LoadImage("cards/R2.png");
@@ -51,7 +50,7 @@ Stack *extraImages()
     push(n, tempNode);
     n->cN++;
 
-    //cargar P2
+    // cargar P2
     tempNode->type = 'P';
     tempNode->level = 2;
     tempNode->imageCard = LoadImage("cards/P2.png");
@@ -59,7 +58,7 @@ Stack *extraImages()
     push(n, tempNode);
     n->cN++;
 
-    //cargar P1
+    // cargar P1
     tempNode->type = 'P';
     tempNode->level = 1;
     tempNode->imageCard = LoadImage("cards/P1.png");
@@ -67,7 +66,7 @@ Stack *extraImages()
     push(n, tempNode);
     n->cN++;
 
-    //cargar cardBack
+    // cargar cardBack
     tempNode->type = 'P';
     tempNode->level = 1;
     tempNode->imageCard = LoadImage("cards/fback.png");
@@ -75,7 +74,7 @@ Stack *extraImages()
     push(n, tempNode);
     n->cN++;
 
-    //cargar tablero
+    // cargar tablero
     tempNode->type = 'T';
     tempNode->level = 0;
     tempNode->imageCard = LoadImage("cards/Tablero.png");
@@ -86,7 +85,7 @@ Stack *extraImages()
     return n;
 }
 
-void drawStart()
+void drawStart() // dibujar menu
 {
     Color backGround = {23, 32, 42, 255};
     Color textStart = {219, 182,0, 255};
@@ -98,7 +97,7 @@ void drawStart()
 
 }
 
-void drawMode(Stack *eI)
+void drawMode(Stack *eI) // dibujar pantalla de seleccion de jugador
 {
     Node *focusNode = eI->head;
 
@@ -108,7 +107,7 @@ void drawMode(Stack *eI)
     DrawTexture(focusNode->textureCard, 0, 0, WHITE);
 }
 
-void drawRound2(Stack *eI)
+void drawRound2(Stack *eI) // dibujar pantalla de cambio de round1 (ItsGoTimeBBY) a round2
 {
     Node *focusNode = eI->head;
 
@@ -118,7 +117,7 @@ void drawRound2(Stack *eI)
     DrawTexture(focusNode->textureCard, 0, 0, WHITE);
 }
 
-void displayRules(Stack *eI)
+void displayRules(Stack *eI) // dibuja reglas
 {
     Node *focusNode = eI->head;
 
@@ -128,7 +127,7 @@ void displayRules(Stack *eI)
     DrawTexture(focusNode->textureCard, 0 , 0, WHITE );
 }
 
-void Winner(Stack *eI, int w, int AI)
+void Winner(Stack *eI, int w, int AI) // dibujar ganador
 {
     Node *focusNode = eI->head;
 
@@ -137,19 +136,19 @@ void Winner(Stack *eI, int w, int AI)
 
     DrawTexture(focusNode->textureCard, 0, 0, WHITE);
 
-    if(w == 1)
+    if(w == 1) // p1 winner
     {
         DrawText("P1", 678, 460, 150, WHITE);
         DrawText("P1", 675, 460, 150, PINK);
     }
     else if(w == 2)
     {
-        if(AI == 1)
+        if(AI == 1) // p2 winner
         {
             DrawText("CPU", 598, 460, 150, WHITE);
             DrawText("CPU", 595, 460, 150, PURPLE);
         }
-        else
+        else // cpu winner
         {
             DrawText("P2", 657, 460, 150, WHITE);
             DrawText("P2", 654, 460, 150, BLUE);
@@ -157,18 +156,20 @@ void Winner(Stack *eI, int w, int AI)
     }
 }
 
-void rotateImage(Node *tC)
+void rotateImage(Node *tC) // rotar imagen del deck
 {
     ImageRotateCCW(&tC->imageCard);
     tC->textureCard = LoadTextureFromImage(tC->imageCard);
 }
 
-void drawTable(Stack *P, Stack *eI)
+void drawTable(Stack *P, Stack *eI) // dibujar tablero
 {
+    // dibujar fondo
     Node *focusEI = eI->head;
     DrawTexture(focusEI->textureCard, 0, 0, WHITE);
     focusEI = focusEI->next->next;
 
+    // dibujar rectangulos en la posicion de las cartas como margen
     Node *focusNode = P->head;
     int i = 0;
     int ac = 13;
@@ -196,37 +197,36 @@ void drawTable(Stack *P, Stack *eI)
 
     }
 
+    //CARTA DE COMBATE
     DrawRectangle(657, 350, 135, 202, WHITE);
     DrawRectangle(976, 350, 135, 202, WHITE);
-
-    //CARTA DE COMBATE
     DrawRectangle(657, 350, 131, 198, BLACK);
     DrawRectangle(976, 350, 131, 198, BLACK);
     DrawText("VS", 843, 420, 60, WHITE);
     DrawText("VS", 840, 420, 60, RED);
 
-    DrawTexture(focusEI->textureCard, 653, 558, WHITE);
+    DrawTexture(focusEI->textureCard, 653, 558, WHITE); // dibujar imagen P1
     focusEI = focusEI->next;
-    DrawTexture(focusEI->textureCard, 970, 560, WHITE);
+    DrawTexture(focusEI->textureCard, 970, 560, WHITE); // dibujar imagen P2
 }
 
-void displayDeckCard(Node *tC)
+void displayDeckCard(Node *tC) // dibujar carta del deck en el round 1 (itsGoTimeBBY)
 {
     DrawRectangle(1390, 382, 202, 135, WHITE);
     DrawTexture(tC->textureCard, 1392, 384, WHITE);
 }
 
-void displayPDeck(Stack *P, Stack *eI)
+void displayPDeck(Stack *P, Stack *eI) // dibujar tablero con las cartas del actual jugador
 {
     drawTable(P, eI);
 
-    Node *focusNodeP = P->head;
+    Node *focusNodeP = P->head; // cartas del jugador
 
     int i = 0;
     int ac = 15;
 
     Node *focusEI = eI->head;
-    focusEI = focusEI->next;
+    focusEI = focusEI->next; // imagenes de atras de la carta
 
     while(focusNodeP != NULL)
     {
@@ -253,22 +253,22 @@ void displayPDeck(Stack *P, Stack *eI)
     }
 }
 
-void displayBackCards(Stack *P, Stack *eI)
+void displayBackCards(Stack *P, Stack *eI) // dibujar todas las cartas boca abajo en la battle phase
 {
     drawTable(P, eI);
 
-    Node *focusNodeP = P->head;
+    Node *focusNodeP = P->head; // para determinar el numero de cartas actuales del jugador
 
     int i = 0;
     int ac = 15;
 
     Node *focusEI = eI->head;
-    focusEI = focusEI->next;
+    focusEI = focusEI->next; // imagen de parte de atras de las cartas superior
 
     Node *focusBP = eI->head;
 
     for(i = 0 ; i < 7 ; i++)
-        focusBP = focusBP->next;
+        focusBP = focusBP->next; // imagen de parte de atras de las cartas inferior
 
     i = 0;
 
@@ -297,7 +297,7 @@ void displayBackCards(Stack *P, Stack *eI)
     }
 }
 
-void displaySelect(Node *nT, Node *nT2)
+void displaySelect(Node *nT, Node *nT2) // dibujar cartas seleccionadas por el jugador
 {
     if(nT != NULL)
         DrawTexture(nT->textureCard, 657, 350, WHITE);
@@ -305,32 +305,32 @@ void displaySelect(Node *nT, Node *nT2)
         DrawTexture(nT2->textureCard, 976, 350, WHITE);
 }
 
-void unloadsImages(Stack *D, Stack *P1, Stack *P2)
+void unloadsImages(Stack *D, Stack *P1, Stack *P2) // funcion unload optimizada al Deck, P1, P2, P1R2 y P1R2
 {
     Node *focusNodeDeck = D->head;
     Node *focusNodeP1 = P1->head;
     Node *focusNodeP2 = P2->head;
 
-    while(focusNodeDeck != NULL)
+    while(focusNodeDeck != NULL) // unload deck
     {
         UnloadImage(focusNodeDeck->imageCard);
         focusNodeDeck = focusNodeDeck->next;
     }
 
-    while(focusNodeP1 != NULL)
+    while(focusNodeP1 != NULL) // unload P1 o P1R2
     {
         UnloadImage(focusNodeP1->imageCard);
         focusNodeP1 = focusNodeP1->next;
     }
 
-    while(focusNodeP2 != NULL)
+    while(focusNodeP2 != NULL) // unload P2 o P2R2
     {
         UnloadImage(focusNodeP2->imageCard);
         focusNodeP2 = focusNodeP2->next;
     }
 }
 
-void unloadsExtraImages(Stack *eI)
+void unloadsExtraImages(Stack *eI) // unload de todas las imagenes extras
 {
     Node *focusNode = eI->head;
 
@@ -341,7 +341,7 @@ void unloadsExtraImages(Stack *eI)
     }
 }
 
-Stack *encapsulation(char temp[52][2])
+Stack *encapsulation(char temp[52][2]) // encapsulada de los nodos del deck
 {
     Stack *D = newStack();
     int i;
@@ -360,13 +360,15 @@ Stack *encapsulation(char temp[52][2])
             D->head = malloc(sizeof(Node));
             e = (int*)temp[i][0];
 
-            D->head->level = e - 48;
-            D->head->type = temp[i][1];
+            D->head->level = e - 48; // guardar char como int del shuffle deck por random
+            D->head->type = temp[i][1]; // guardar char de type
             D->head->next = NULL;
 
+            // cambiar el root para tener la direccion actual de la carta
             root[6] = temp[i][1];
             root[7] = temp[i][0];
 
+            // cargar imagen y textura a la estructura
             D->head->imageCard = LoadImage(root);
             D->head->textureCard = LoadTextureFromImage(D->head->imageCard);
 
@@ -379,16 +381,18 @@ Stack *encapsulation(char temp[52][2])
 
             e = (int*)temp[i][0];
 
-            focusNode->level = e - 48;
-            focusNode->type = temp[i][1];
+            focusNode->level = e - 48; // guardar char como int del shuffle deck por random
+            focusNode->type = temp[i][1]; // guardar char de type
             focusNode->next = NULL;
 
+            // cambiar el root para tener la direccion actual de la carta
             root[6] = temp[i][1];
             root[7] = temp[i][0];
 
+            // cargar imagen y textura a la estructura
             focusNode->imageCard = LoadImage(root);
 
-            if(i >= 25 && i % 2 == 0)
+            if(i >= 25 && i % 2 == 0) // rotar solo las cartas que se quedaran en el deck para un futuro display
                 ImageRotateCW(&focusNode->imageCard);
 
             focusNode->textureCard = LoadTextureFromImage(focusNode->imageCard);
@@ -401,7 +405,7 @@ Stack *encapsulation(char temp[52][2])
     return D;
 }
 
-Stack *newDeck()
+Stack *newDeck() // funcion para revolver el deck al iniciar partida
 {
     char list[52][2] = {{'0' , 'G'}, {'0' , 'G'}, {'0' , 'G'}, {'0' , 'G'}, {'0' , 'G'},
                         {'1' , 'G'}, {'2' , 'G'}, {'3' , 'G'}, {'4' , 'G'}, {'5' , 'G'},
@@ -431,7 +435,7 @@ Stack *newDeck()
     char temp[52][2];
     int repeated[52];
 
-    for(i = 0 ; i < 52 ; i++)
+    for(i = 0 ; i < 52 ; i++) // asignar valor random de nuestra matriz y comprobar que no se repitan los valores
     {
         r = rand() % n;
         for(j = 0 ; j < i ; j++)
@@ -461,7 +465,7 @@ Stack *newDeck()
 
 }
 
-Stack *newPlayer(Stack *D)
+Stack *newPlayer(Stack *D) // obtener 13 cartas para un jugador del deck
 {
     Stack *p = newStack();
 
@@ -479,29 +483,30 @@ Stack *newPlayer(Stack *D)
     return p;
 }
 
-int selectCard(Stack *D, Node *nT, Node *nT2, Stack *P1, Stack *P2)
+int selectCard(Stack *D, Node *nT, Node *nT2, Stack *P1, Stack *P2) // funcion para seleccionar carta segun el teclado
 {
     int i = 0;
     Node *focusNode = NULL;
 
-    if(nT == NULL && nT2 != NULL)
+    if(nT == NULL && nT2 != NULL) // turno jugador 1
         focusNode = P1->head;
-    else if(nT2 == NULL && nT != NULL)
+    else if(nT2 == NULL && nT != NULL) // turno del jugador 2
         focusNode = P2->head;
     else if(nT == NULL && nT2 == NULL)
     {
         if(D->t == 0)
-            focusNode = P1->head;
+            focusNode = P1->head; // turno jugador 1
         else if(D->t == 1)
-            focusNode = P2->head;
+            focusNode = P2->head; // turno del jugador 2
     }
 
-    while(focusNode != NULL)
+    while(focusNode != NULL) // obtener la cantidad actual de cartas del jugador
     {
         i++;
         focusNode = focusNode->next;
     }
 
+    // condiciones para elegir carta
     if(IsKeyPressed(KEY_SPACE))
         return 0;
     else if(i >= 1 && IsKeyPressed(KEY_Q))
@@ -536,7 +541,7 @@ int selectCard(Stack *D, Node *nT, Node *nT2, Stack *P1, Stack *P2)
         return 0;
 }
 
-Node *craigOption(Node *temp, Node *focusNode)
+Node *craigOption(Node *temp, Node *focusNode) // optimizacion de guardar nodo en el temporal
 {
     temp = malloc(sizeof(Node));
 
@@ -548,7 +553,7 @@ Node *craigOption(Node *temp, Node *focusNode)
     return temp;
 }
 
-int craig(Stack *D, Stack *P2, Node *nT)
+int craig(Stack *D, Stack *P2, Node *nT) // funcion IA para seleccionar carta
 {
     Node *focusNode = P2->head;
     Node *deck = peek(D);
@@ -824,7 +829,7 @@ int craig(Stack *D, Stack *P2, Node *nT)
     }
 }
 
-void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P1R2, Stack *P2R2, Stack *eI, int AI)
+void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P1R2, Stack *P2R2, Stack *eI, int AI) // comienza la primera ronda del juego
 {
     Stack *temp = newStack();
     Node *tC;
@@ -832,7 +837,7 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
     Node *nT2 = NULL;
     int neXt = 0;
 
-    while(peek(D) != NULL)
+    while(peek(D) != NULL) // se checa que el deck no este vació para saber cuando terminar la ronda
     {
         BeginDrawing();
         tC = peek(D);
@@ -840,37 +845,37 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
         int c = 0;
         int i = 0;
 
-        if(IsKeyPressed(KEY_SPACE))
+        if(IsKeyPressed(KEY_SPACE))// se utiliza para detectar quese pulso la tecla space y se puede pasar al siguiente turno
             neXt = 15;
 
-        if(nT == NULL || nT2 == NULL)
-            c = selectCard(D, nT, nT2, P1, P2);
+        if(nT == NULL || nT2 == NULL) // se verifica sialguno de los dos jugadores no ha selecionado carta para que pueda elegir
+            c = selectCard(D, nT, nT2, P1, P2);// llama a la función para elegir carta
 
-        if(D->t == 0)
+        if(D->t == 0) // se checa si es turno del jugador 1
         {
-            if(nT != NULL && nT2 != NULL)
+            if(nT != NULL && nT2 != NULL) // detecta que los jugadores ya tengan una carta seleccionar apara comenzar la batlle phase
             {
                 displayBackCards(P1, eI);
                 displayDeckCard(tC);
                 displaySelect(nT, nT2);
             }
-            else if(nT == NULL)
+            else if(nT == NULL) // Se verifica si el jugador 1 todavia no elige carta
             {
                 displayPDeck(P1, eI);
                 displayDeckCard(tC);
                 DrawText("P1", 1455, 560, 80, WHITE);
                 DrawText("P1", 1453, 560, 80, PINK);
 
-                if(c != 0)
+                if(c != 0) // se verifica si el jugador unoya eligio carta
                 {
-                    for(i = 0; i < c; i++)
+                    for(i = 0; i < c; i++) // se recorren las cartas del player 1 hasta encontrar la elegida
                     {
                         r = pop(P1);
                         push(temp, r);
                     }
 
                     nT = pop(temp);
-                    displaySelect(nT, nT2);
+                    displaySelect(nT, nT2); // se muestra la carta elegida
                     P1->cN--;
 
                     while(peek(temp) != NULL)
@@ -882,9 +887,9 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
                     neXt = 0;
                 }
             }
-            else if(nT != NULL)
+            else if(nT != NULL) // se checa si el player uno ya eligio carta para comenzar el turno del player 2
             {
-                if(AI == 0)
+                if(AI == 0) // se verifica si la bandera de la inteligencia artificial esta apagada para saber el modo del juego
                     displayPDeck(P2, eI);
 
                 displayDeckCard(tC);
@@ -896,12 +901,12 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
                     DrawText("P2", 1453, 560, 80, BLUE);
                 }
 
-                if(AI == 1)
+                if(AI == 1) // detecta la bandera de AI  prendida por lo qeu llama a la función de nuestro AI
                     c = craig(D, P2, nT);
 
-                if(c != 0)
+                if(c != 0) // se verifica si el jugador unoya eligio carta
                 {
-                    for(i = 0; i < c; i++)
+                    for(i = 0; i < c; i++)// se recorren las cartas del player 1 hasta encontrar la elegida
                     {
                         r = pop(P2);
                         push(temp, r);
@@ -922,9 +927,9 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
                 }
             }
         }
-        else if(D->t == 1)
+        else if(D->t == 1) // se verifica si es turno del player 2
         {
-            if(nT != NULL && nT2 != NULL)
+            if(nT != NULL && nT2 != NULL) // se verifica si los dos jugadores ya eligieron carta
             {
                 displayBackCards(P1, eI);
                 displayDeckCard(tC);
@@ -932,23 +937,23 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
             }
             else if(nT2 == NULL)
             {
-                if(AI == 0)
+                if(AI == 0) // se verifica si la bandera de la inteligencia artificial esta apagada para saber el modo del juego
                     displayPDeck(P2, eI);
 
                 displayDeckCard(tC);
 
-                if(AI == 0)
+                if(AI == 0) // si la AI esta apagada imprime que es turno del player 2
                 {
                     DrawText("P2", 1455, 560, 80, WHITE);
                     DrawText("P2", 1453, 560, 80, BLUE);
                 }
 
-                if(AI == 1)
+                if(AI == 1) // detecta si esta prendida la bandera de la intelgiencia artificial para llamar la función de AI
                     c = craig(D, P2, nT);
 
-                if(c != 0)
+                if(c != 0) // se verifica que ya se haya seleccionado carta
                 {
-                    for(i = 0; i < c; i++)
+                    for(i = 0; i < c; i++) // se busca la carta en el deck del jugador
                     {
                         r = pop(P2);
                         push(temp, r);
@@ -966,7 +971,7 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
                     neXt = 0;
                 }
             }
-            else if(nT2 != NULL)
+            else if(nT2 != NULL) // se checa que ya haya jugado el player 2 para comenzar el turno depl player 1
             {
                 displayPDeck(P1, eI);
                 displayDeckCard(tC);
@@ -975,9 +980,9 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
                 DrawText("P1", 1455, 560, 80, WHITE);
                 DrawText("P1", 1453, 560, 80, PINK);
 
-                if(c != 0)
+                if(c != 0) // se verifica que ya haya elegido carta el player 1
                 {
-                    for(i = 0; i < c; i++)
+                    for(i = 0; i < c; i++) // se busca la carta en el deck del player 1
                     {
                         r = pop(P1);
                         push(temp, r);
@@ -997,36 +1002,36 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
             }
         }
 
-        if(nT != NULL && nT2 != NULL && neXt == 15)
+        if(nT != NULL && nT2 != NULL && neXt == 15) // se verifica que ya los dos players hayan elegido sus cartas para comenzar el battle phase
         {
             tC = pop(D);
             rotateImage(tC);
 
             if(nT->type == nT2->type || nT->type == 'D' || nT2->type == 'D') //comparacion de nivel y comodin
             {
-                if(D->t == 0 && nT2->type == 'N' && nT->type == 'D')
+                if(D->t == 0 && nT2->type == 'N' && nT->type == 'D') // se verifica que el player 1 haya elegido Duppleganger el player 2 necromancer y sea el turno del player 1
                 {
                     push(V1, nT2);
                     push(P1R2, tC);
                     D->t = 0;
                 }
-                else if(D->t == 1 && nT->type == 'N' && nT2->type == 'D')
+                else if(D->t == 1 && nT->type == 'N' && nT2->type == 'D') // se verifica que el player 2 haya elegido Duppleganger el player 1 necromancer y sea el turno del player 2
                 {
                     push(V2, nT);
                     push(P2R2, tC);
                     D->t = 1;
                 }
-                else if(nT->type == 'N' || nT2->type == 'N')
+                else if(nT->type == 'N' || nT2->type == 'N') // se verifica que cualquier jugador seleccione necromancer
                 {
                     int b = 0;
-                    if(nT->type == nT2->type)
+                    if(nT->type == nT2->type) // si ambos son necromancer
                         b = 1;
-                    else if(D->t == 0 && nT2->type == 'D' && nT->type == 'N')
+                    else if(D->t == 0 && nT2->type == 'D' && nT->type == 'N') // si player 1 es necromancer y el player 2 es Doppleganger y es turno del palyer 1
                         b = 2;
-                    else if(D->t == 1 && nT->type == 'D' && nT2->type == 'N')
+                    else if(D->t == 1 && nT->type == 'D' && nT2->type == 'N') // si player 2 es necromancer y el player 1 es Doppleganger y es turno del palyer 2
                         b = 3;
 
-                    if(nT->level > nT2->level || (nT->level == nT2->level && D->t == 0))
+                    if(nT->level > nT2->level || (nT->level == nT2->level && D->t == 0)) // si la carta del player 1 es mayor a la carta del palyer 2 o que sean del mismo level en el turno del jugador 1
                     {
                         if(b == 1)
                         {
@@ -1048,7 +1053,7 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
                             D->t = 0;
                         }
                     }
-                    else if(nT->level < nT2->level || (nT->level == nT2->level && D->t == 1))
+                    else if(nT->level < nT2->level || (nT->level == nT2->level && D->t == 1)) // se verifica que la carta del palyer 1 sea menor a la carta del palyer 2 o que tengan el mismo nivel pero sea turno del jugador 1
                     {
                         if(b == 1)
                         {
@@ -1071,17 +1076,17 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
                         }
                     }
                 }
-                else if(D->t == 0 && nT->type == 'D' && nT2->type != 'D')
+                else if(D->t == 0 && nT->type == 'D' && nT2->type != 'D')  // se verifica que sea turno del P1 , que P1 haya puesto Duppelganger y que P2 tambien haya puesto Duppelganger
                 {
                     push(P1R2, tC);
                     D->t = 0;
                 }
-                else if(D->t == 1 && nT2->type == 'D' && nT->type != 'D')
+                else if(D->t == 1 && nT2->type == 'D' && nT->type != 'D') // se verifica que sea turno del P2 , que P1 haya puesto Duppelganger y que P2 tambien haya puesto Duppelganger
                 {
                     push(P2R2, tC);
                     D->t = 1;
                 }
-                else if(nT->level > nT2->level || (nT->level == nT2->level && D->t == 0))
+                else if(nT->level > nT2->level || (nT->level == nT2->level && D->t == 0)) // se checa que el level de la carat del P1 sea mayor a la del P2
                 {
                     push(P1R2, tC);
                     D->t = 0;
