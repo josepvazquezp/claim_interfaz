@@ -1614,131 +1614,64 @@ int claimWinner(Stack *V1, Stack *V2, Stack *eI) // se verfica quein gano el jue
 
         pop(V2);
     }
-    /*
-    printf("\n[P1TG]: %d\t[P1TE]: %d\t[P1TN]: %d\t[P1TD]: %d\t[P1TK]: %d\t\n", P1TG, P1TE, P1TN, P1TD, P1TK);
-    printf("[P1GMax]: %d\t[P1EMax]: %d\t[P1NMax]: %d\t[P1DMax]: %d\t[P1KMax]: %d\t\n", P1GMax, P1EMax, P1NMax, P1DMax, P1KMax);
-    printf("\n[P2TG]: %d\t[P2TE]: %d\t[P2TN]: %d\t[P2TD]: %d\t[P2TK]: %d\t\n", P2TG, P2TE, P2TN, P2TD, P2TK);
-    printf("[P2GMax]: %d\t[P2EMax]: %d\t[P2NMax]: %d\t[P2DMax]: %d\t[P2KMax]: %d\t\n", P2GMax, P2EMax, P2NMax, P2DMax, P2KMax);
-    */
+
     //Goblins
     if(P1TG > P2TG) // con estas condiciones se define quein gano la mayoria de votantes de cada clase
-    {
-        //printf("Mas Goblins Votaron por el Jugador 1\n");
         VT1++;
-    }
     else if(P2TG > P1TG)
-    {
-        //printf("Mas Goblins Votaron por el Jugador 2\n");
         VT2++;
-    }
     else if(P1TG == P2TG)
     {
-        //printf("Empate\n");
-
         if(P1GMax > P2GMax)
-        {
-            //printf("El Jugador 1 Tiene el voto del Goblin mas alto, por lo que se lleva el voto de los Goblins\n");
             VT1++;
-        }
         else if(P2GMax > P1GMax)
-        {
-            //printf("El Jugador 2 Tiene el voto del Goblin mas alto, por lo que se lleva el voto de los Goblins\n");
             VT2++;
-        }
     }
 
     //Enanos
     if(P1TE > P2TE)
-    {
-        //printf("Mas Enanos Votaron por el Jugador 1\n");
         VT1++;
-    }
     else if(P2TE > P1TE)
-    {
-        //printf("Mas Enanos Votaron por el Jugador 2\n");
         VT2++;
-    }
     else if(P1TE == P2TE)
     {
-        //printf("Empate\n");
-
         if(P1EMax > P2EMax)
-        {
-            //printf("El Jugador 1 Tiene el voto del Enano mas alto, por lo que se lleva el voto de los Enanos\n");
             VT1++;
-        }
         else if (P2EMax > P1EMax)
-        {
-            //printf("El Jugador 2 Tiene el voto del Enano mas alto, por lo que se lleva el voto de los Enanos\n");
             VT2++;
-        }
     }
 
     //necromancers
     if(P1TN > P2TN)
-    {
-        //printf("Mas Necromancers Votaron por el Jugador 1\n");
         VT1++;
-    }
     else if(P2TN > P1TN)
-    {
-        //printf("Mas Necromancers Votaron por el Jugador 2\n");
         VT2++;
-    }
     else if(P1TN == P2TN)
     {
-        //printf("Empate\n");
-
         if(P1NMax > P2NMax)
-        {
-            //printf("El Jugador 1 Tiene el voto del Necromancer mas alto, por lo que se lleva el voto de los Necromancers\n");
             VT1++;
-        }
         else if(P2NMax > P1NMax)
-        {
-            //printf("El Jugador 2 Tiene el voto del Necromancer mas alto, por lo que se lleva el voto de los Necromancers\n");
             VT2++;
-        }
     }
 
     //doppelgangers
     if(P1TD > P2TD)
-    {
-        //printf("Mas Doppelgangers Votaron por el Jugador 1\n");
         VT1++;
-    }
     else if(P2TD > P1TD)
-    {
-        //printf("Mas Doppelgangers Votaron por el Jugador 2\n");
         VT2++;
-    }
     else if(P1TD == P2TD)
     {
-        //printf("Empate\n");
-
         if(P1DMax > P2DMax)
-        {
-            //printf("El Jugador 1 Tiene el voto del Doppelganger mas alto, por lo que se lleva el voto de los Doppelgangers\n");
             VT1++;
-        }
         else if(P2DMax > P1DMax)
-        {
-            //printf("El Jugador 2 Tiene el voto del Doppelganger mas alto, por lo que se lleva el voto de los Doppelgangers\n");
             VT2++;
-        }
     }
 
     //knights
     if(P1TK > P2TK)
-    {
-        //printf("Mas Knights Votaron por el Jugador 1\n");
         VT1++;
-    }
     else if(P2TK > P1TK)
-    {
-        //printf("Mas Knights Votaron por el Jugador 2\n");
         VT2++;
-    }
     else if(P1TK == P2TK)
     {
         if(P1KMax > P2KMax)
