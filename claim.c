@@ -660,17 +660,16 @@ int craig(Stack *D, Stack *P2, Node *nT) // funcion IA para seleccionar carta
                 focusNode = focusNode->next;
             }
 
-            if(i == 1) //ultima carta
-                return 1;
-
             if(cT != 0) //checar si hay carta del mismo tipo
                 return cT;
             else if(cK != 0 && nT->type == 'G') //caso de no tener Goblin checar si hay knight para matar Goblin
                 return cK;
             else if(cD != 0 && nT->level < tempD->level) // caso de no tener del mismo tipo checar si hay Doppleganger
                 return cD;
-            else // caso de no tener del mismo tipo y no tener Doppleganger
+            else if(min != 0) // caso de no tener del mismo tipo y no tener Doppleganger
                 return min;
+            else
+                return 1;
         }
         else if(D->t == 1) // empieza craig
         {
@@ -786,9 +785,6 @@ int craig(Stack *D, Stack *P2, Node *nT) // funcion IA para seleccionar carta
                 focusNode = focusNode->next;
             }
 
-            if(i == 1) //ultima carta
-                return 1;
-
             if(cE != 0)
                 return cE;
             else if(cT != 0) //checar si hay carta del mismo tipo
@@ -797,8 +793,10 @@ int craig(Stack *D, Stack *P2, Node *nT) // funcion IA para seleccionar carta
                 return cK;
             else if(cD != 0 && nT->level < tempD->level) // caso de no tener del mismo tipo checar si hay Doppleganger
                 return cD;
-            else // caso de no tener del mismo tipo y no tener Doppleganger
+            else if(min != 0) // caso de no tener del mismo tipo y no tener Doppleganger
                 return min;
+            else
+                return 1;
 
         }
         else if(D->t == 1) // empieza craig

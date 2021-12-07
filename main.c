@@ -57,7 +57,7 @@ int main(void)
         if(rules == 1) // mostrar reglas
             displayRules(eI);
 
-        if(mode == 1) // mostrar pantalla de seleccion de jugador
+        if(mode == 1 && winner == 0) // mostrar pantalla de seleccion de jugador
             drawMode(eI);
 
         if(IsKeyPressed(KEY_ENTER)) // cambiar banderas de start y mode para comenzar round 1
