@@ -1086,18 +1086,18 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
                     push(P2R2, tC);
                     D->t = 1;
                 }
-                else if(nT->level > nT2->level || (nT->level == nT2->level && D->t == 0)) // se checa que el level de la carat del P1 sea mayor a la del P2
+                else if(nT->level > nT2->level || (nT->level == nT2->level && D->t == 0)) // se checa que el level de la carat del P1 sea mayor a la del P2 o que los levels de ambos players sean iguales y que sea turno del P0
                 {
                     push(P1R2, tC);
                     D->t = 0;
                 }
-                else if(nT->level < nT2->level || (nT->level == nT2->level && D->t == 1))
+                else if(nT->level < nT2->level || (nT->level == nT2->level && D->t == 1)) // Se verifica que el level del P2 sea mayor o que sean iguales los levels y sea truno del P2
                 {
                     push(P2R2, tC);
                     D->t = 1;
                 }
             }
-            else if(nT->type != nT2->type)
+            else if(nT->type != nT2->type) // se verifica si los types son diferentes 
             {
                 if(D->t == 0 && nT->type == 'N' && nT->level > nT2->level) //necromancers puntos directos
                 {
@@ -1106,47 +1106,48 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
                     D->t = 0;
                 }
                 else if
-                        (D->t == 1 && nT2->type == 'N' && nT->level < nT2->level)
+                        (D->t == 1 && nT2->type == 'N' && nT->level < nT2->level) // se le dan puntos dirctos a P2 por haber ganado con necromancer 
                 {
                     push(V2, nT);
                     push(P2R2, tC);
                     D->t = 1;
                 }
-                else if(D->t == 0 && nT2->type == 'N' && nT->level > nT2->level)
+                else if(D->t == 0 && nT2->type == 'N' && nT->level > nT2->level) // Puntos directos  a P1 por ganar con nrecromancer 
                 {
                     push(V1, nT2);
                     push(P1R2, tC);
                     D->t = 0;
                 }
-                else if(D->t == 1 && nT->type == 'N' && nT->level < nT2->level)
+                else if(D->t == 1 && nT->type == 'N' && nT->level < nT2->level) // se le dan puntos dirctos a P2 por haber ganado con necromancer  
                 {
                     push(V2, nT);
                     push(P2R2, tC);
                     D->t = 1;
                 }
-                else if(D->t == 0 && nT->type == 'G' && nT2->type == 'K')
+                else if(D->t == 0 && nT->type == 'G' && nT2->type == 'K') // se checa que el P1 haya puesto Goblin y el P2 knight para darle la victroia al P2
                 {
                     push(P2R2, tC);
                     D->t = 1;
                 }
-                else if(D->t == 1 && nT->type == 'K' && nT2->type == 'G')
+                else if(D->t == 1 && nT->type == 'K' && nT2->type == 'G') // se checa que el P2 haya puesto Goblin y el P2 knight para darle la victroia al P1
                 {
                     push(P1R2, tC);
                     D->t = 0;
                 }
-                else if(D->t == 0)
+                else if(D->t == 0) // se verifica que P1 haya empezado para darle la victoria del turno
                 {
                     push(P1R2, tC);
                     D->t = 0;
                 }
-                else if(D->t == 1)
+                else if(D->t == 1) // se verifica que P2 haya empezado para darle la victoria del turno
+    
                 {
                     push(P2R2, tC);
                     D->t = 1;
                 }
             }
 
-            if(D->t == 0)
+            if(D->t == 0) // se verifican los turnos para cambiar al que sigue 
             {
                 tC = pop(D);
                 push(P2R2, tC);
@@ -1160,14 +1161,14 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
             tC = NULL;
             nT = NULL;
             nT2 = NULL;
-            neXt = 0;
+            neXt = 0; // se reincian las cariables para la segunda vuelta 
         }
         EndDrawing();
     }
 
 }
 
-void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI, int AI)
+void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI, int AI) // comienza la ronda 2 
 {
 
     Stack *temp = newStack();
@@ -1176,7 +1177,7 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI, 
     int end = 0;
     int neXt = 0;
 
-    while(end < 13)
+    while(end < 13) // se realizan los 13 turnos y cuadno se juega el utlimo termina la ronda 
     {
         BeginDrawing();
 
@@ -1185,36 +1186,36 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI, 
         int i = 0;
 
 
-        if(IsKeyPressed(KEY_SPACE))
+        if(IsKeyPressed(KEY_SPACE)) // se utiliza para detectar que se pulso la tecla space y se puede pasar al siguiente turno
             neXt = 15;
 
-        if(nT == NULL || nT2 == NULL)
+        if(nT == NULL || nT2 == NULL) // se verifica sialguno de los dos jugadores no ha selecionado carta para que pueda elegir
             c = selectCard(D, nT, nT2, P1R2, P2R2);
 
-        if(D->t == 0)
+        if(D->t == 0) // se checa si es turno del jugador 1
         {
-            if(nT != NULL && nT2 != NULL)
+            if(nT != NULL && nT2 != NULL) // detecta que los jugadores ya tengan una carta seleccionar apara comenzar la batlle phase
             {
                 displayBackCards(P1R2, eI);
                 displaySelect(nT, nT2);
             }
-            else if(nT == NULL)
+            else if(nT == NULL) // Se verifica si el jugador 1 todavia no elige carta
             {
                 displayPDeck(P1R2, eI);
 
                 DrawText("P1", 1455, 560, 80, WHITE);
                 DrawText("P1", 1453, 560, 80, PINK);
 
-                if(c != 0)
+                if(c != 0) // se verifica si el jugador unoya eligio carta
                 {
-                    for(i = 0; i < c; i++)
+                    for(i = 0; i < c; i++) // se recorren las cartas del player 1 hasta encontrar la elegida
                     {
                         r = pop(P1R2);
                         push(temp, r);
                     }
 
                     nT = pop(temp);
-                    displaySelect(nT, nT2);
+                    displaySelect(nT, nT2);  // se muestra la carta elegida
                     P1R2->cN--;
 
                     while(peek(temp) != NULL)
@@ -1227,23 +1228,23 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI, 
                     neXt = 0;
                 }
             }
-            else if(nT != NULL)
+            else if(nT != NULL) // se checa si el player uno ya eligio carta para comenzar el turno del player 2
             {
                 displayPDeck(P2R2, eI);
                 displaySelect(nT, nT2);
 
-                if(AI == 0)
+                if(AI == 0) // se verifica si la bandera de la inteligencia artificial esta apagada para saber el modo del juego
                 {
                     DrawText("P2", 1455, 560, 80, WHITE);
                     DrawText("P2", 1453, 560, 80, BLUE);
                 }
 
-                if(AI == 1)
+                if(AI == 1) // detecta la bandera de AI  prendida por lo qeu llama a la función de nuestro AI
                     c = craig(D, P2R2, nT);
 
-                if(c != 0)
+                if(c != 0) // se verifica si el jugador unoya eligio carta
                 {
-                    for(i = 0; i < c; i++)
+                    for(i = 0; i < c; i++) // se recorren las cartas del player 1 hasta encontrar la elegida
                     {
                         r = pop(P2R2);
                         push(temp, r);
@@ -1262,9 +1263,9 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI, 
                 }
             }
         }
-        else if(D->t == 1)
+        else if(D->t == 1) // se verifica si es turno del player 2
         {
-            if(nT != NULL && nT2 != NULL)
+            if(nT != NULL && nT2 != NULL)  // se verifica si los dos jugadores ya eligieron carta
             {
                 displayBackCards(P1R2, eI);
                 displaySelect(nT, nT2);
@@ -1273,18 +1274,18 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI, 
             {
                 displayPDeck(P2R2, eI);
 
-                if(AI == 0)
+                if(AI == 0) // si la AI esta apagada imprime que es turno del player 2
                 {
                     DrawText("P2", 1455, 560, 80, WHITE);
                     DrawText("P2", 1453, 560, 80, BLUE);
                 }
 
-                if(AI == 1)
+                if(AI == 1)// detecta si esta prendida la bandera de la intelgiencia artificial para llamar la función de AI
                     c = craig(D, P2R2, nT);
 
-                if(c != 0)
+                if(c != 0) // se verifica que ya se haya seleccionado carta
                 {
-                    for(i = 0; i < c; i++)
+                    for(i = 0; i < c; i++) // se busca la carta en el deck del jugador
                     {
                         r = pop(P2R2);
                         push(temp, r);
@@ -1303,7 +1304,7 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI, 
                     neXt = 0;
                 }
             }
-            else if(nT2 != NULL)
+            else if(nT2 != NULL) // se checa que ya haya jugado el player 2 para comenzar el turno depl player 1
             {
                 displayPDeck(P1R2, eI);
                 displaySelect(nT,nT2);
@@ -1311,9 +1312,9 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI, 
                 DrawText("P1", 1455, 560, 80, WHITE);
                 DrawText("P1", 1453, 560, 80, PINK);
 
-                if(c != 0)
+                if(c != 0) // se verifica que ya haya elegido carta el player 1
                 {
-                    for(i = 0; i < c; i++)
+                    for(i = 0; i < c; i++)  // se busca la carta en el deck del player 1
                     {
                         r = pop(P1R2);
                         push(temp, r);
@@ -1333,7 +1334,7 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI, 
             }
         }
 
-        if(nT != NULL && nT2 != NULL && neXt == 15)
+        if(nT != NULL && nT2 != NULL && neXt == 15)  // se verifica que ya los dos players hayan elegido sus cartas para comenzar el battle phase
         {
             //CONDICIONES GOBLIN Y KNIGHT
             if(D->t == 1 && nT->type == 'K' && nT2->type == 'G')
@@ -1505,7 +1506,7 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI, 
     }
 }
 
-int claimWinner(Stack *V1, Stack *V2, Stack *eI)
+int claimWinner(Stack *V1, Stack *V2, Stack *eI) // se verfica quein gano el juego
 {
     int P1TG = 0;
     int P1TE = 0;
@@ -1520,7 +1521,7 @@ int claimWinner(Stack *V1, Stack *V2, Stack *eI)
     int P1KMax = 0;
 
 
-    while(peek(V1) != NULL)
+    while(peek(V1) != NULL) // se revisa cuantos hay en el stack de votantes del player 1
     {
         if(V1->head->type == 'G')
         {
@@ -1573,7 +1574,7 @@ int claimWinner(Stack *V1, Stack *V2, Stack *eI)
     int P2DMax = 0;
     int P2KMax = 0;
 
-    while(peek(V2) != NULL)
+    while(peek(V2) != NULL) // se revisa cuantos hay en el stack de votantes del player 2
     {
         if(V2->head->type == 'G')
         {
@@ -1620,7 +1621,7 @@ int claimWinner(Stack *V1, Stack *V2, Stack *eI)
     printf("[P2GMax]: %d\t[P2EMax]: %d\t[P2NMax]: %d\t[P2DMax]: %d\t[P2KMax]: %d\t\n", P2GMax, P2EMax, P2NMax, P2DMax, P2KMax);
     */
     //Goblins
-    if(P1TG > P2TG)
+    if(P1TG > P2TG) // con estas condiciones se define quein gano la mayoria de votantes de cada clase
     {
         //printf("Mas Goblins Votaron por el Jugador 1\n");
         VT1++;
