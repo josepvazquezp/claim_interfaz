@@ -143,12 +143,12 @@ void Winner(Stack *eI, int w, int AI) // dibujar ganador
     }
     else if(w == 2)
     {
-        if(AI == 1) // p2 winner
+        if(AI == 1) // cpu winner
         {
             DrawText("CPU", 598, 460, 150, WHITE);
             DrawText("CPU", 595, 460, 150, PURPLE);
         }
-        else // cpu winner
+        else // p2 winner
         {
             DrawText("P2", 657, 460, 150, WHITE);
             DrawText("P2", 654, 460, 150, BLUE);
@@ -294,6 +294,9 @@ void displayBackCards(Stack *P, Stack *eI) // dibujar todas las cartas boca abaj
 
         i++;
 
+        Color moradito = {55, 17, 129, 255};
+        DrawText("Press SPACE to continue", 503, 250, 60, WHITE);
+        DrawText("Press SPACE to continue", 500, 250, 60, moradito);
     }
 }
 
@@ -303,6 +306,40 @@ void displaySelect(Node *nT, Node *nT2) // dibujar cartas seleccionadas por el j
         DrawTexture(nT->textureCard, 657, 350, WHITE);
     if(nT2 != NULL)
         DrawTexture(nT2->textureCard, 976, 350, WHITE);
+}
+
+void displayTurn(Stack *D, Node *nT, Node *nT2)
+{
+    ClearBackground(BLACK);
+    DrawText("Ready", 640, 220, 100, GOLD);
+    DrawText("Press K to continue as the king you will be", 240, 650, 50, YELLOW);
+
+    if(D->t == 0)
+    {
+        if(nT == NULL)
+        {
+            DrawText("P1", 718, 380, 150, WHITE);
+            DrawText("P1", 715, 380, 150, PINK);
+        }
+        else if(nT != NULL && nT2 == NULL)
+        {
+            DrawText("P2", 697, 380, 150, WHITE);
+            DrawText("P2", 694, 380, 150, BLUE);
+        }
+    }
+    else if(D->t == 1)
+    {
+        if(nT2 == NULL)
+        {
+            DrawText("P2", 697, 380, 150, WHITE);
+            DrawText("P2", 694, 380, 150, BLUE);
+        }
+        else if(nT2 != NULL && nT == NULL)
+        {
+            DrawText("P1", 718, 410, 150, WHITE);
+            DrawText("P1", 715, 410, 150, PINK);
+        }
+    }
 }
 
 void unloadsImages(Stack *D, Stack *P1, Stack *P2) // funcion unload optimizada al Deck, P1, P2, P1R2 y P1R2
@@ -834,6 +871,10 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
     Node *nT = NULL;
     Node *nT2 = NULL;
     int neXt = 0;
+    int d = 1;
+
+    if(AI == 1)
+        d = 0;
 
     while(peek(D) != NULL) // se checa que el deck no este vació para saber cuando terminar la ronda
     {
@@ -843,13 +884,19 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
         int c = 0;
         int i = 0;
 
-        if(IsKeyPressed(KEY_SPACE))// se utiliza para detectar quese pulso la tecla space y se puede pasar al siguiente turno
+        if(d == 0 && nT != NULL && nT2 != NULL && IsKeyPressed(KEY_SPACE))// se utiliza para detectar quese pulso la tecla space y se puede pasar al siguiente turno
             neXt = 15;
 
-        if(nT == NULL || nT2 == NULL) // se verifica sialguno de los dos jugadores no ha selecionado carta para que pueda elegir
+        if(IsKeyPressed(KEY_K))
+            d = 0;
+
+        if(d == 0 && neXt == 0 && (nT == NULL || nT2 == NULL)) // se verifica si alguno de los dos jugadores no ha selecionado carta para que pueda elegir
             c = selectCard(D, nT, nT2, P1, P2);// llama a la función para elegir carta
 
-        if(D->t == 0) // se checa si es turno del jugador 1
+        if(AI == 0 && d == 1)
+            displayTurn(D, nT, nT2);
+
+        if(d == 0 && D->t == 0) // se checa si es turno del jugador 1
         {
             if(nT != NULL && nT2 != NULL) // detecta que los jugadores ya tengan una carta seleccionar apara comenzar la batlle phase
             {
@@ -883,6 +930,9 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
                     }
                     c = 0;
                     neXt = 0;
+
+                    if(AI == 0)
+                        d = 1;
                 }
             }
             else if(nT != NULL) // se checa si el player uno ya eligio carta para comenzar el turno del player 2
@@ -925,7 +975,7 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
                 }
             }
         }
-        else if(D->t == 1) // se verifica si es turno del player 2
+        else if(d == 0 && D->t == 1) // se verifica si es turno del player 2
         {
             if(nT != NULL && nT2 != NULL) // se verifica si los dos jugadores ya eligieron carta
             {
@@ -967,6 +1017,9 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
                     }
                     c = 0;
                     neXt = 0;
+
+                    if(AI == 0)
+                        d = 1;
                 }
             }
             else if(nT2 != NULL) // se checa que ya haya jugado el player 2 para comenzar el turno depl player 1
@@ -1159,8 +1212,12 @@ void itsGoTimeBBY(Stack *D, Stack *V1, Stack *V2, Stack *P1, Stack *P2, Stack *P
             tC = NULL;
             nT = NULL;
             nT2 = NULL;
-            neXt = 0; // se reincian las cariables para la segunda vuelta 
+            neXt = 0; // se reincian las cariables para la segunda vuelta
+
+            if(AI == 0)
+                d = 1;
         }
+
         EndDrawing();
     }
 
@@ -1174,6 +1231,10 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI, 
     Node *nT2 = NULL;
     int end = 0;
     int neXt = 0;
+    int d = 1;
+
+    if(AI == 1)
+        d = 0;
 
     while(end < 13) // se realizan los 13 turnos y cuadno se juega el utlimo termina la ronda 
     {
@@ -1184,13 +1245,19 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI, 
         int i = 0;
 
 
-        if(IsKeyPressed(KEY_SPACE)) // se utiliza para detectar que se pulso la tecla space y se puede pasar al siguiente turno
+        if(d == 0 && nT != NULL && nT2 != NULL && IsKeyPressed(KEY_SPACE)) // se utiliza para detectar que se pulso la tecla space y se puede pasar al siguiente turno
             neXt = 15;
 
-        if(nT == NULL || nT2 == NULL) // se verifica sialguno de los dos jugadores no ha selecionado carta para que pueda elegir
+        if(IsKeyPressed(KEY_K))
+            d = 0;
+
+        if(d == 0 && neXt == 0 && (nT == NULL || nT2 == NULL)) // se verifica sialguno de los dos jugadores no ha selecionado carta para que pueda elegir
             c = selectCard(D, nT, nT2, P1R2, P2R2);
 
-        if(D->t == 0) // se checa si es turno del jugador 1
+        if(AI == 0 && d == 1)
+            displayTurn(D, nT, nT2);
+
+        if(d == 0 && D->t == 0) // se checa si es turno del jugador 1
         {
             if(nT != NULL && nT2 != NULL) // detecta que los jugadores ya tengan una carta seleccionar apara comenzar la batlle phase
             {
@@ -1224,6 +1291,9 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI, 
 
                     c = 0;
                     neXt = 0;
+
+                    if(AI == 0)
+                        d = 1;
                 }
             }
             else if(nT != NULL) // se checa si el player uno ya eligio carta para comenzar el turno del player 2
@@ -1261,7 +1331,7 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI, 
                 }
             }
         }
-        else if(D->t == 1) // se verifica si es turno del player 2
+        else if(d == 0 && D->t == 1) // se verifica si es turno del player 2
         {
             if(nT != NULL && nT2 != NULL)  // se verifica si los dos jugadores ya eligieron carta
             {
@@ -1300,6 +1370,9 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI, 
                     }
                     c = 0;
                     neXt = 0;
+
+                    if(AI == 0)
+                        d = 1;
                 }
             }
             else if(nT2 != NULL) // se checa que ya haya jugado el player 2 para comenzar el turno depl player 1
@@ -1499,7 +1572,11 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI, 
             nT2 = NULL;
             end++;
             neXt = 0;
+
+            if(AI == 0)
+                d = 1;
         }
+
         EndDrawing();
     }
 }
