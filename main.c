@@ -19,6 +19,16 @@ int main(void)
     int rules = 0;
     int AI = 0;
     int mode = 0;
+    int *P1G = initEncapsulation();
+    int *P2G = initEncapsulation();
+    int *P1E = initEncapsulation();
+    int *P2E = initEncapsulation();
+    int *P1N = initEncapsulation();
+    int *P2N = initEncapsulation();
+    int *P1D = initEncapsulation();
+    int *P2D = initEncapsulation();
+    int *P1K = initEncapsulation();
+    int *P2K = initEncapsulation();
 
     Stack *V1;
     Stack *V2;
@@ -118,12 +128,15 @@ int main(void)
                 while(peek(P2R2) != NULL)
                     pop(P2R2);
 
-                WResult = claimWinner(V1, V2, eI); // obtener al ganador
+                WResult = claimWinner(V1, V2, eI, AI, P1G, P2G, P1E, P2E, P1N, P2N, P1D, P2D, P1K, P2K); // obtener al ganador
                 ClearBackground(BLACK);
             }
 
             if(WResult != 0) // mostrar pantalla del ganador
+            {
                 Winner(eI, WResult, AI);
+                displayResultTable(AI, P1G, P2G, P1E, P2E, P1N, P2N, P1D, P2D, P1K, P2K);
+            }
 
         }
 

@@ -156,6 +156,80 @@ void Winner(Stack *eI, int w, int AI) // dibujar ganador
     }
 }
 
+void clanNumber(int PT, int x, int y)
+{
+    switch(PT)
+    {
+        case 1:
+            DrawText("1", x, y, 25, WHITE);
+            break;
+        case 2:
+            DrawText("2", x, y, 25, WHITE);
+            break;
+        case 3:
+            DrawText("3", x, y, 25, WHITE);
+            break;
+        case 4:
+            DrawText("4", x, y, 25, WHITE);
+            break;
+        case 5:
+            DrawText("5", x, y, 25, WHITE);
+            break;
+        case 6:
+            DrawText("6", x, y, 25, WHITE);
+            break;
+        case 7:
+            DrawText("7", x, y, 25, WHITE);
+            break;
+        case 8:
+            DrawText("8", x, y, 25, WHITE);
+            break;
+        case 9:
+            DrawText("9", x, y, 25, WHITE);
+            break;
+        default:
+            DrawText("0", x, y, 25, WHITE);
+            break;
+    }
+}
+
+void displayResultTable(int AI, int *P1TG, int *P2TG, int *P1TE, int *P2TE, int *P1TN, int *P2TN, int *P1TD, int *P2TD, int *P1TK, int *P2TK)
+{
+    int x = 590;
+    int y = 680;
+
+    DrawText("P1", 580, 640, 30, PINK);
+
+    if(AI == 0)
+        DrawText("P2", 880, 640, 30, BLUE);
+    else if(AI == 1)
+        DrawText("CPU", 868, 640, 30, PURPLE);
+
+    DrawText("Goblins", 690, y, 30, GREEN);
+    clanNumber(*(P1TG), x, y);
+    clanNumber(*(P2TG), x + 300, y);
+    y += 40;
+
+    DrawText("Dwarfs", 690, y, 30, SKYBLUE);
+    clanNumber(*(P1TE), x, y);
+    clanNumber(*(P2TE), x + 300, y);
+    y += 40;
+
+    DrawText("Necromancers", 640, y, 30, PURPLE);
+    clanNumber(*(P1TN), x, y);
+    clanNumber(*(P2TN), x + 300, y);
+    y += 40;
+
+    DrawText("Doppelgangers", 635, y, 30, GRAY);
+    clanNumber(*(P1TD), x, y);
+    clanNumber(*(P2TD), x + 300, y);
+    y += 40;
+
+    DrawText("Knights", 690, y, 30, LIGHTGRAY);
+    clanNumber(*(P1TK), x, y);
+    clanNumber(*(P2TK), x + 300, y);
+}
+
 void rotateImage(Node *tC) // rotar imagen del deck
 {
     ImageRotateCCW(&tC->imageCard);
@@ -376,6 +450,11 @@ void unloadsExtraImages(Stack *eI) // unload de todas las imagenes extras
         UnloadImage(focusNode->imageCard);
         focusNode = focusNode->next;
     }
+}
+
+int *initEncapsulation()
+{
+    return malloc(sizeof(int));
 }
 
 Stack *encapsulation(char temp[52][2]) // encapsulada de los nodos del deck
@@ -1420,7 +1499,7 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI, 
                 push(V2, nT2);
                 D->t = 1;
             }
-                //COMPARACIONES DE MISMA CLASE
+            //COMPARACIONES DE MISMA CLASE
             else if(nT->type == nT2->type)
             {
                 if(nT->type == 'E' && nT2->type == 'E') //caso 2 enanos
@@ -1451,13 +1530,32 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI, 
                     D->t = 1;
                 }
             }
-                //COMPARACIONES DE DIFERENTE CLASE SIN DUPPLEGANGER
+            //COMPARACIONES DE DIFERENTE CLASE SIN DUPPLEGANGER
             else if(nT->type != nT2->type && nT->type != 'D' && nT2->type != 'D')
             {
-                if(nT->type == 'E' || nT2->type == 'E') //enano perdedor
+                if(D->t == 0 && nT2->type == 'E')
                 {
                     push(V1, nT);
                     push(V2, nT2);
+                    D->t = 0;
+                }
+                else if(D->t == 1 && nT->type == 'E')
+                {
+                    push(V1, nT);
+                    push(V2, nT2);
+                    D->t = 1;
+                }
+                else if(D->t == 0 && nT->type == 'E')
+                {
+                    push(V1, nT2);
+                    push(V2, nT);
+                    D->t = 0;
+                }
+                else if(D->t == 1 && nT2->type == 'E')
+                {
+                    push(V1, nT);
+                    push(V2, nT2);
+                    D->t = 1;
                 }
                 else if(D->t == 0)
                 {
@@ -1472,7 +1570,7 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI, 
                     //D->t = 1; al estar implicito
                 }
             }
-                //COMPARACIONES DE DIFERENTE CLASE CON DUPPLEGANGER
+            //COMPARACIONES DE DIFERENTE CLASE CON DUPPLEGANGER
             else if(D->t == 0 && nT->type == 'D')
             {
                 if(nT2->type != 'D')
@@ -1545,6 +1643,7 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI, 
                     {
                         push(V1, nT);
                         push(V2, nT2);
+                        D->t = 0;
                     }
                     else
                     {
@@ -1559,6 +1658,7 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI, 
                     {
                         push(V1, nT);
                         push(V2, nT2);
+                        D->t = 1;
                     }
                     else
                     {
@@ -1581,7 +1681,7 @@ void round2(Stack *D, Stack *V1, Stack *V2,Stack *P1R2, Stack *P2R2, Stack *eI, 
     }
 }
 
-int claimWinner(Stack *V1, Stack *V2, Stack *eI) // se verfica quein gano el juego
+int claimWinner(Stack *V1, Stack *V2, Stack *eI, int AI, int *P1G, int *P2G, int *P1E, int *P2E, int *P1N, int *P2N, int *P1D, int *P2D, int *P1K, int *P2K) // se verfica quein gano el juego
 {
     int P1TG = 0;
     int P1TE = 0;
@@ -1637,6 +1737,12 @@ int claimWinner(Stack *V1, Stack *V2, Stack *eI) // se verfica quein gano el jue
         pop(V1);
     }
 
+    *(P1G) = P1TG;
+    *(P1E) = P1TE;
+    *(P1N) = P1TN;
+    *(P1D) = P1TD;
+    *(P1K) = P1TK;
+
     int P2TG = 0;
     int P2TE = 0;
     int P2TN = 0;
@@ -1689,6 +1795,12 @@ int claimWinner(Stack *V1, Stack *V2, Stack *eI) // se verfica quein gano el jue
 
         pop(V2);
     }
+
+    *(P2G) = P2TG;
+    *(P2E) = P2TE;
+    *(P2N) = P2TN;
+    *(P2D) = P2TD;
+    *(P2K) = P2TK;
 
     //Goblins
     if(P1TG > P2TG) // con estas condiciones se define quein gano la mayoria de votantes de cada clase
